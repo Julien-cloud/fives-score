@@ -1,8 +1,12 @@
--- Exécuter dans Supabase > SQL Editor, après avoir remplacé TON_EMAIL@EXEMPLE.COM.
+-- Schéma complet pour une nouvelle installation. Les quatre administrateurs
+-- correspondent à la liste publique déclarée dans admin-emails.js.
 create table public.players (
   id uuid primary key default gen_random_uuid(),
   name text not null unique check (char_length(name) between 1 and 24),
   active boolean not null default true,
+  last_name text,
+  position text not null default 'polyvalent' check (position in ('attaque','defense','polyvalent')),
+  avatar_url text,
   created_at timestamptz not null default now()
 );
 create table public.matches (
@@ -10,6 +14,8 @@ create table public.matches (
   date date not null,
   result text not null check (result in ('A','B','N')),
   motm_id uuid not null references public.players(id),
+  score_a int not null default 0 check (score_a >= 0),
+  score_b int not null default 0 check (score_b >= 0),
   created_at timestamptz not null default now()
 );
 create table public.participations (
@@ -24,6 +30,6 @@ alter table public.participations enable row level security;
 create policy "lecture publique joueurs" on public.players for select using (true);
 create policy "lecture publique matchs" on public.matches for select using (true);
 create policy "lecture publique participations" on public.participations for select using (true);
-create policy "admin gere joueurs" on public.players for all to authenticated using ((auth.jwt() ->> 'email') = 'TON_EMAIL@EXEMPLE.COM') with check ((auth.jwt() ->> 'email') = 'TON_EMAIL@EXEMPLE.COM');
-create policy "admin gere matchs" on public.matches for all to authenticated using ((auth.jwt() ->> 'email') = 'TON_EMAIL@EXEMPLE.COM') with check ((auth.jwt() ->> 'email') = 'TON_EMAIL@EXEMPLE.COM');
-create policy "admin gere participations" on public.participations for all to authenticated using ((auth.jwt() ->> 'email') = 'TON_EMAIL@EXEMPLE.COM') with check ((auth.jwt() ->> 'email') = 'TON_EMAIL@EXEMPLE.COM');
+create policy "admin gere joueurs" on public.players for all to authenticated using (lower(auth.jwt() ->> 'email') = any(array['juliencannoux@yahoo.com','juliiengravity350@gmail.com','rayanrahou51@gmail.com','lucas.nadreau@gmail.com'])) with check (lower(auth.jwt() ->> 'email') = any(array['juliencannoux@yahoo.com','juliiengravity350@gmail.com','rayanrahou51@gmail.com','lucas.nadreau@gmail.com']));
+create policy "admin gere matchs" on public.matches for all to authenticated using (lower(auth.jwt() ->> 'email') = any(array['juliencannoux@yahoo.com','juliiengravity350@gmail.com','rayanrahou51@gmail.com','lucas.nadreau@gmail.com'])) with check (lower(auth.jwt() ->> 'email') = any(array['juliencannoux@yahoo.com','juliiengravity350@gmail.com','rayanrahou51@gmail.com','lucas.nadreau@gmail.com']));
+create policy "admin gere participations" on public.participations for all to authenticated using (lower(auth.jwt() ->> 'email') = any(array['juliencannoux@yahoo.com','juliiengravity350@gmail.com','rayanrahou51@gmail.com','lucas.nadreau@gmail.com'])) with check (lower(auth.jwt() ->> 'email') = any(array['juliencannoux@yahoo.com','juliiengravity350@gmail.com','rayanrahou51@gmail.com','lucas.nadreau@gmail.com']));

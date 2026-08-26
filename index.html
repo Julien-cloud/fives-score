@@ -51,12 +51,44 @@
       <div class="section-heading"><div><p class="eyebrow">L'EFFECTIF</p><h2>Les joueurs</h2></div><button class="primary" id="addPlayerBtn">+ Joueur</button></div>
       <div class="player-grid" id="playerGrid"></div>
     </section>
-    <section class="page" id="composer"><div class="section-heading"><div><p class="eyebrow">PROCHAIN MATCH</p><h2>Composer les équipes</h2></div></div><div class="card"><p class="muted">Glisse les joueurs du banc vers les deux équipes.</p><div class="drag-teams"><div><h3>Team A</h3><div id="composeA" class="dropzone"></div></div><div><h3>Team B</h3><div id="composeB" class="dropzone"></div></div></div><h3>Banc</h3><div id="composePool" class="player-pool"></div><p class="eyebrow">STYLE DE COMPOSITION</p><div class="mode-buttons"><button class="mode active" data-mode="fair">Impartial</button><button class="mode" data-mode="human">Humain</button><button class="mode" data-mode="random">Aléatoire</button></div><button class="primary" id="generateTeamsBtn">Générer les équipes</button><div id="builderResult" class="builder-result"></div></div></section>
+    <section class="page" id="composer">
+      <div class="section-heading"><div><p class="eyebrow">PROCHAIN MATCH</p><h2>Composer les équipes</h2></div></div>
+      <div class="card composer-card">
+        <p class="muted">Place les participants sur la feuille de match, choisis un style, puis laisse le système former les équipes.</p>
+        <div class="selection-board">
+          <div><div class="zone-title"><h3>Banc</h3><span id="benchCount" class="count-pill">0</span></div><div id="composeBench" class="dropzone player-pool" data-compose-zone="bench"></div></div>
+          <div><div class="zone-title"><h3>Feuille de match</h3><span id="sheetCount" class="count-pill">0</span></div><div id="composeSheet" class="dropzone player-pool match-sheet" data-compose-zone="sheet"></div></div>
+        </div>
+        <p class="touch-hint">Astuce mobile : touche un joueur pour le déplacer.</p>
+        <p class="eyebrow mode-label">STYLE DE COMPOSITION</p>
+        <div class="mode-buttons">
+          <button class="mode active" data-mode="fair"><b>Impartial</b><small>Équilibre optimisé</small></button>
+          <button class="mode" data-mode="human"><b>Humain</b><small>Deux associations pimentées</small></button>
+          <button class="mode" data-mode="random"><b>Aléatoire</b><small>100 % hasard</small></button>
+        </div>
+        <button class="primary generate" id="generateTeamsBtn">Générer les équipes</button>
+        <div id="builderResult" class="builder-result"></div>
+      </div>
+    </section>
   </main>
 
   <dialog id="playerDialog"><form class="modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><label>Nom (facultatif)<input id="playerLastName" maxlength="32" placeholder="Ex. Dupont" /></label><label>Profil<select id="playerPosition"><option value="polyvalent">Polyvalent</option><option value="attaque">Attaque</option><option value="defense">Défense</option></select></label><button class="primary wide" id="savePlayerBtn" type="button">Ajouter à l'effectif</button></form></dialog>
 
-  <dialog id="matchDialog"><form class="modal match-modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2><label>Date<input id="matchDate" type="date" required /></label><div class="teams"><div><h3>Team A</h3><div class="player-checks" id="teamAChoices"></div></div><div><h3>Team B</h3><div class="player-checks" id="teamBChoices"></div></div></div><fieldset><legend>Résultat</legend><div class="result-options"><label><input type="radio" name="result" value="A" required><span>Victoire A</span></label><label><input type="radio" name="result" value="N"><span>Égalité</span></label><label><input type="radio" name="result" value="B"><span>Victoire B</span></label></div></fieldset><label>Homme du match<select id="motm"><option value="">— Sélectionner —</option></select></label><button class="primary wide" id="saveMatchBtn" type="button">Enregistrer le match</button></form></dialog>
+  <dialog id="matchDialog"><div class="modal match-modal"><button class="close" type="button" aria-label="Annuler et fermer">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2>
+    <div class="stepper"><span class="active" data-step-indicator="1">1 · Équipes</span><span data-step-indicator="2">2 · Résultat</span></div>
+    <section id="matchStepTeams" class="match-step active">
+      <label>Date<input id="matchDate" type="date" required /></label>
+      <div class="match-team-board"><div><h3>Team A</h3><div id="matchTeamA" class="dropzone team-zone" data-match-zone="A"></div></div><div><h3>Team B</h3><div id="matchTeamB" class="dropzone team-zone" data-match-zone="B"></div></div></div>
+      <div class="zone-title"><h3>Joueurs disponibles</h3><span id="availableCount" class="count-pill">0</span></div><div id="matchPool" class="dropzone player-pool" data-match-zone="pool"></div><p class="touch-hint">Glisse les joueurs ou touche-les pour les déplacer.</p>
+      <button class="primary wide" id="continueMatchBtn" type="button">Continuer vers le score</button>
+    </section>
+    <section id="matchStepResult" class="match-step">
+      <div class="score-editor"><label>Team A<input id="scoreA" type="number" min="0" max="99" inputmode="numeric" value="0" /></label><span>—</span><label>Team B<input id="scoreB" type="number" min="0" max="99" inputmode="numeric" value="0" /></label></div>
+      <div id="resultPreview" class="result-preview">Égalité</div>
+      <label>Homme du match<select id="motm"><option value="">— Sélectionner —</option></select></label>
+      <div class="modal-actions"><button class="secondary" id="backMatchBtn" type="button">Retour</button><button class="primary" id="saveMatchBtn" type="button">Enregistrer le match</button></div>
+    </section>
+  </div></dialog>
   <dialog id="playerDetail"><div class="modal"><button class="close" type="button">×</button><div id="playerDetailBody"></div></div></dialog>
 
   <dialog id="settingsDialog"><div class="modal"><button class="close" type="button">×</button><p class="eyebrow">CONNEXION</p><h2>Administration</h2><div id="accountPanel"></div></div></dialog>
@@ -65,6 +97,5 @@
   <script src="supabase-config.js"></script>
   <script src="admin-emails.js"></script>
   <script src="app.js"></script>
-  <script>document.addEventListener('click',e=>{if(e.target.matches('.close'))e.target.closest('dialog')?.close()});</script>
 </body>
 </html>
