@@ -8,4 +8,8 @@
 
 Les joueurs n'ont pas besoin de compte : ils lisent les statistiques publiquement. Seules les quatre adresses administratrices peuvent modifier les joueurs et les matchs.
 
+## Ajouter le suivi des buts à une base existante
+
+Exécute une seule fois `supabase-migration-goals.sql` dans Supabase > SQL Editor. Cette migration ajoute le nombre de buts à chaque participation sans supprimer ni modifier l'historique existant.
+
 Ne colle jamais la clé `service_role` dans le site ; seule la clé `anon public` doit être utilisée.

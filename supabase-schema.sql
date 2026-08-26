@@ -22,6 +22,7 @@ create table public.participations (
   match_id uuid not null references public.matches(id) on delete cascade,
   player_id uuid not null references public.players(id),
   team text not null check (team in ('A','B')),
+  goals int not null default 0 check (goals >= 0),
   primary key (match_id, player_id)
 );
 alter table public.players enable row level security;
