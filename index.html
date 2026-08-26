@@ -56,7 +56,7 @@
 
   <dialog id="playerDialog"><form class="modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><label>Nom (facultatif)<input id="playerLastName" maxlength="32" placeholder="Ex. Dupont" /></label><label>Profil<select id="playerPosition"><option value="polyvalent">Polyvalent</option><option value="attaque">Attaque</option><option value="defense">Défense</option></select></label><button class="primary wide" id="savePlayerBtn" type="button">Ajouter à l'effectif</button></form></dialog>
 
-  <dialog id="matchDialog"><form class="modal match-modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2><label>Date<input id="matchDate" type="date" required /></label><p class="muted">Glisse les joueurs depuis le banc vers une équipe, ou clique sur une carte pour la déplacer.</p><div class="drag-teams"><div><h3>Team A</h3><div id="dropA" class="dropzone"></div></div><div><h3>Team B</h3><div id="dropB" class="dropzone"></div></div></div><h3>Banc</h3><div id="playerPool" class="player-pool"></div><div class="scores"><label>Team A<input id="scoreA" type="number" min="0" required value="0" /></label><strong>—</strong><label>Team B<input id="scoreB" type="number" min="0" required value="0" /></label></div><p id="resultPreview" class="result-preview">Égalité</p><label>Homme du match<select id="motm"><option value="">— Sélectionner —</option></select></label><button class="primary wide" id="saveMatchBtn" type="button">Enregistrer le match</button></form></dialog>
+  <dialog id="matchDialog"><form class="modal match-modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2><label>Date<input id="matchDate" type="date" required /></label><div class="teams"><div><h3>Team A</h3><div class="player-checks" id="teamAChoices"></div></div><div><h3>Team B</h3><div class="player-checks" id="teamBChoices"></div></div></div><fieldset><legend>Résultat</legend><div class="result-options"><label><input type="radio" name="result" value="A" required><span>Victoire A</span></label><label><input type="radio" name="result" value="N"><span>Égalité</span></label><label><input type="radio" name="result" value="B"><span>Victoire B</span></label></div></fieldset><label>Homme du match<select id="motm"><option value="">— Sélectionner —</option></select></label><button class="primary wide" id="saveMatchBtn" type="button">Enregistrer le match</button></form></dialog>
   <dialog id="playerDetail"><div class="modal"><button class="close" type="button">×</button><div id="playerDetailBody"></div></div></dialog>
 
   <dialog id="settingsDialog"><div class="modal"><button class="close" type="button">×</button><p class="eyebrow">CONNEXION</p><h2>Administration</h2><div id="accountPanel"></div></div></dialog>
@@ -65,6 +65,6 @@
   <script src="supabase-config.js"></script>
   <script src="admin-emails.js"></script>
   <script src="app.js"></script>
-  <script src="upgrade.js"></script>
+  <script>document.addEventListener('click',e=>{if(e.target.matches('.close'))e.target.closest('dialog')?.close()});</script>
 </body>
 </html>
