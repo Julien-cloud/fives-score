@@ -10,6 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="cloud.css" />
+  <link rel="stylesheet" href="upgrade.css" />
 </head>
 <body>
   <header class="topbar">
@@ -28,6 +29,7 @@
       <button class="tab active" data-page="classement">Classement</button>
       <button class="tab" data-page="matchs">Matchs</button>
       <button class="tab" data-page="joueurs">Joueurs</button>
+      <button class="tab" data-page="composer">Composer</button>
     </nav>
 
     <section class="page active" id="classement">
@@ -48,17 +50,20 @@
       <div class="section-heading"><div><p class="eyebrow">L'EFFECTIF</p><h2>Les joueurs</h2></div><button class="primary" id="addPlayerBtn">+ Joueur</button></div>
       <div class="player-grid" id="playerGrid"></div>
     </section>
+    <section class="page" id="composer"><div class="section-heading"><div><p class="eyebrow">PROCHAIN MATCH</p><h2>Composer les équipes</h2></div></div><div class="card"><label>Style de composition<select id="builderMode"><option value="fair">Impartial — équipes équilibrées</option><option value="human">Humain — une touche de folie</option><option value="random">Aléatoire — 100% hasard</option></select></label><p class="muted">Sélectionne les joueurs, puis génère une proposition.</p><div id="builderPlayers" class="player-checks"></div><button class="primary" id="generateTeamsBtn">Générer les équipes</button><div id="builderResult" class="builder-result"></div></div></section>
   </main>
 
-  <dialog id="playerDialog"><form method="dialog" class="modal"><button class="close" value="cancel">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><button class="primary wide" id="savePlayerBtn" value="default">Ajouter à l'effectif</button></form></dialog>
+  <dialog id="playerDialog"><form class="modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><label>Nom (facultatif)<input id="playerLastName" maxlength="32" placeholder="Ex. Dupont" /></label><label>Profil<select id="playerPosition"><option value="polyvalent">Polyvalent</option><option value="attaque">Attaque</option><option value="defense">Défense</option></select></label><button class="primary wide" id="savePlayerBtn" type="button">Ajouter à l'effectif</button></form></dialog>
 
-  <dialog id="matchDialog"><form method="dialog" class="modal match-modal"><button class="close" value="cancel">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2><label>Date<input id="matchDate" type="date" required /></label><div class="teams"><div><h3>Team A</h3><div class="player-checks" id="teamAChoices"></div></div><div><h3>Team B</h3><div class="player-checks" id="teamBChoices"></div></div></div><fieldset><legend>Résultat</legend><div class="result-options"><label><input type="radio" name="result" value="A" required /><span>Victoire A</span></label><label><input type="radio" name="result" value="N" /><span>Égalité</span></label><label><input type="radio" name="result" value="B" /><span>Victoire B</span></label></div></fieldset><label>Homme du match<select id="motm"><option value="">— Sélectionner —</option></select></label><button class="primary wide" id="saveMatchBtn" value="default">Enregistrer le match</button></form></dialog>
+  <dialog id="matchDialog"><form class="modal match-modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2><label>Date<input id="matchDate" type="date" required /></label><p class="muted">Glisse les joueurs depuis le banc vers une équipe, ou clique sur une carte pour la déplacer.</p><div class="drag-teams"><div><h3>Team A</h3><div id="dropA" class="dropzone"></div></div><div><h3>Team B</h3><div id="dropB" class="dropzone"></div></div></div><h3>Banc</h3><div id="playerPool" class="player-pool"></div><div class="scores"><label>Team A<input id="scoreA" type="number" min="0" required value="0" /></label><strong>—</strong><label>Team B<input id="scoreB" type="number" min="0" required value="0" /></label></div><p id="resultPreview" class="result-preview">Égalité</p><label>Homme du match<select id="motm"><option value="">— Sélectionner —</option></select></label><button class="primary wide" id="saveMatchBtn" type="button">Enregistrer le match</button></form></dialog>
+  <dialog id="playerDetail"><div class="modal"><button class="close" type="button">×</button><div id="playerDetailBody"></div></div></dialog>
 
-  <dialog id="settingsDialog"><form method="dialog" class="modal"><button class="close" value="cancel">×</button><p class="eyebrow">RÉGLAGES</p><h2>Gérer les données</h2><div id="accountPanel"></div><details class="config"><summary>Connecter Supabase</summary><p class="muted">Copie l'URL du projet et la clé <i>anon public</i> depuis Supabase.</p><label>URL du projet<input id="supabaseUrl" placeholder="https://xxxxx.supabase.co" /></label><label>Clé anon public<textarea id="supabaseKey" rows="3" placeholder="eyJ..."></textarea></label><button class="primary wide" id="saveConfigBtn" value="default">Connecter la base</button></details><button class="danger wide" id="resetBtn" value="default">Réinitialiser la démo locale</button></form></dialog>
+  <dialog id="settingsDialog"><div class="modal"><button class="close" type="button">×</button><p class="eyebrow">CONNEXION</p><h2>Administration</h2><div id="accountPanel"></div></div></dialog>
   <div id="toast" role="status"></div>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase-config.js"></script>
   <script src="admin-emails.js"></script>
   <script src="app.js"></script>
+  <script src="upgrade.js"></script>
 </body>
 </html>
