@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="cloud.css" />
   <link rel="stylesheet" href="upgrade.css" />
+  <link rel="stylesheet" href="composer.css" />
 </head>
 <body>
   <header class="topbar">
@@ -50,7 +51,7 @@
       <div class="section-heading"><div><p class="eyebrow">L'EFFECTIF</p><h2>Les joueurs</h2></div><button class="primary" id="addPlayerBtn">+ Joueur</button></div>
       <div class="player-grid" id="playerGrid"></div>
     </section>
-    <section class="page" id="composer"><div class="section-heading"><div><p class="eyebrow">PROCHAIN MATCH</p><h2>Composer les équipes</h2></div></div><div class="card"><label>Style de composition<select id="builderMode"><option value="fair">Impartial — équipes équilibrées</option><option value="human">Humain — une touche de folie</option><option value="random">Aléatoire — 100% hasard</option></select></label><p class="muted">Sélectionne les joueurs, puis génère une proposition.</p><div id="builderPlayers" class="player-checks"></div><button class="primary" id="generateTeamsBtn">Générer les équipes</button><div id="builderResult" class="builder-result"></div></div></section>
+    <section class="page" id="composer"><div class="section-heading"><div><p class="eyebrow">PROCHAIN MATCH</p><h2>Composer les équipes</h2></div></div><div class="card"><p class="muted">Glisse les joueurs du banc vers les deux équipes.</p><div class="drag-teams"><div><h3>Team A</h3><div id="composeA" class="dropzone"></div></div><div><h3>Team B</h3><div id="composeB" class="dropzone"></div></div></div><h3>Banc</h3><div id="composePool" class="player-pool"></div><p class="eyebrow">STYLE DE COMPOSITION</p><div class="mode-buttons"><button class="mode active" data-mode="fair">Impartial</button><button class="mode" data-mode="human">Humain</button><button class="mode" data-mode="random">Aléatoire</button></div><button class="primary" id="generateTeamsBtn">Générer les équipes</button><div id="builderResult" class="builder-result"></div></div></section>
   </main>
 
   <dialog id="playerDialog"><form class="modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><label>Nom (facultatif)<input id="playerLastName" maxlength="32" placeholder="Ex. Dupont" /></label><label>Profil<select id="playerPosition"><option value="polyvalent">Polyvalent</option><option value="attaque">Attaque</option><option value="defense">Défense</option></select></label><button class="primary wide" id="savePlayerBtn" type="button">Ajouter à l'effectif</button></form></dialog>
