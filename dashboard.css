@@ -1,0 +1,9 @@
+.trophy > p:last-of-type {
+  margin: 5px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.trophy:first-child > p:last-of-type {
+  color: #c4dbce;
+}

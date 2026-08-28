@@ -12,4 +12,8 @@ Les joueurs n'ont pas besoin de compte : ils lisent les statistiques publiquemen
 
 Exécute une seule fois `supabase-migration-goals.sql` dans Supabase > SQL Editor. Cette migration ajoute le nombre de buts à chaque participation sans supprimer ni modifier l'historique existant.
 
+## Ajouter les profils Milieu et Gardien
+
+Exécute une seule fois `supabase-migration-positions.sql` dans Supabase > SQL Editor. Cette migration élargit uniquement la liste des profils autorisés et conserve tous les joueurs existants.
+
 Ne colle jamais la clé `service_role` dans le site ; seule la clé `anon public` doit être utilisée.

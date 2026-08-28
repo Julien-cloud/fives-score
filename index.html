@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="cloud.css" />
   <link rel="stylesheet" href="upgrade.css" />
   <link rel="stylesheet" href="composer.css" />
+  <link rel="stylesheet" href="dashboard.css" />
 </head>
 <body>
   <header class="topbar">
@@ -37,7 +38,7 @@
       <div class="section-heading"><div><p class="eyebrow">LE PODIUM</p><h2>Course aux trophées</h2></div></div>
       <div class="trophy-grid" id="trophyGrid"></div>
       <div class="card ranking-card">
-        <div class="card-title"><h3>Classement général</h3><span class="pill">Taux de victoire prioritaire</span></div>
+        <div class="card-title"><div class="title-with-info"><h3>Classement général</h3><button class="info-button" type="button" data-info-key="points" aria-label="Comment sont calculés les points ?">i</button></div><label class="ranking-filter">Trier par<select id="rankingSort"><option value="points">Points</option><option value="rate">% de victoire</option><option value="goals">Buts marqués</option></select></label></div>
         <div class="table-wrap"><table><thead><tr><th>#</th><th>Joueur</th><th>MJ</th><th>V</th><th>N</th><th>D</th><th>Pts</th><th>Buts</th><th>% V</th></tr></thead><tbody id="rankingBody"></tbody></table></div>
       </div>
     </section>
@@ -49,7 +50,13 @@
 
     <section class="page" id="joueurs">
       <div class="section-heading"><div><p class="eyebrow">L'EFFECTIF</p><h2>Les joueurs</h2></div><button class="primary" id="addPlayerBtn">+ Joueur</button></div>
-      <div class="player-grid" id="playerGrid"></div>
+      <div class="subtabs" role="tablist" aria-label="Vues des joueurs"><button class="subtab active" type="button" data-player-view="cards">Fiches joueurs</button><button class="subtab" type="button" data-player-view="analytics">Analyse des profils</button></div>
+      <div class="player-view active" id="playerCardsView"><div class="player-grid" id="playerGrid"></div></div>
+      <div class="player-view" id="playerAnalyticsView">
+        <div class="analytics-toolbar"><div><p class="eyebrow">RÉPARTITION</p><h3>Profils de l'effectif</h3></div><label>Filtrer<select id="profileFilter"><option value="all">Tous les profils</option><option value="attaque">Attaquants</option><option value="defense">Défenseurs</option><option value="milieu">Milieux</option><option value="gardien">Gardiens</option><option value="polyvalent">Polyvalents</option></select></label></div>
+        <div class="analytics-grid"><article class="card profile-chart-card"><div id="profileDonut" class="profile-donut"></div><div id="profileLegend" class="profile-legend"></div></article><article class="card"><h3>Volume par profil</h3><div id="profileBars" class="profile-bars"></div></article></div>
+        <div id="profileFilteredPlayers" class="profile-filtered-grid"></div>
+      </div>
     </section>
     <section class="page" id="composer">
       <div class="section-heading"><div><p class="eyebrow">PROCHAIN MATCH</p><h2>Composer les équipes</h2></div></div>
@@ -72,7 +79,7 @@
     </section>
   </main>
 
-  <dialog id="playerDialog"><form class="modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><label>Nom (facultatif)<input id="playerLastName" maxlength="32" placeholder="Ex. Dupont" /></label><label>Profil<select id="playerPosition"><option value="polyvalent">Polyvalent</option><option value="attaque">Attaque</option><option value="defense">Défense</option></select></label><button class="primary wide" id="savePlayerBtn" type="button">Ajouter à l'effectif</button></form></dialog>
+  <dialog id="playerDialog"><form class="modal"><button class="close" type="button">×</button><p class="eyebrow">NOUVEL ÉLÉMENT</p><h2>Ajouter un joueur</h2><label>Prénom<input id="playerName" required maxlength="24" placeholder="Ex. Julien" /></label><label>Nom (facultatif)<input id="playerLastName" maxlength="32" placeholder="Ex. Dupont" /></label><label>Profil<select id="playerPosition"><option value="polyvalent">Polyvalent</option><option value="attaque">Attaque</option><option value="milieu">Milieu</option><option value="defense">Défense</option><option value="gardien">Gardien</option></select></label><button class="primary wide" id="savePlayerBtn" type="button">Ajouter à l'effectif</button></form></dialog>
 
   <dialog id="matchDialog"><div class="modal match-modal"><button class="close" type="button" aria-label="Annuler et fermer">×</button><p class="eyebrow">NOUVEAU MATCH</p><h2>Enregistrer le résultat</h2>
     <div class="stepper"><span class="active" data-step-indicator="1">1 · Équipes</span><span data-step-indicator="2">2 · Résultat</span></div>
@@ -90,6 +97,8 @@
     </section>
   </div></dialog>
   <dialog id="playerDetail"><div class="modal"><button class="close" type="button">×</button><div id="playerDetailBody"></div></div></dialog>
+  <dialog id="rankingDialog"><div class="modal ranking-modal"><button class="close" type="button">×</button><p class="eyebrow">TOP 3</p><h2 id="rankingDialogTitle">Classement</h2><div id="rankingPodium" class="ranking-podium"></div></div></dialog>
+  <dialog id="infoDialog"><div class="modal info-modal"><button class="close" type="button">×</button><p class="eyebrow">INFORMATION</p><h2 id="infoDialogTitle">Calcul de la statistique</h2><p id="infoDialogText" class="muted"></p></div></dialog>
 
   <dialog id="settingsDialog"><div class="modal"><button class="close" type="button">×</button><p class="eyebrow">CONNEXION</p><h2>Administration</h2><div id="accountPanel"></div></div></dialog>
   <div id="toast" role="status"></div>

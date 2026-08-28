@@ -5,7 +5,7 @@ create table public.players (
   name text not null unique check (char_length(name) between 1 and 24),
   active boolean not null default true,
   last_name text,
-  position text not null default 'polyvalent' check (position in ('attaque','defense','polyvalent')),
+  position text not null default 'polyvalent' check (position in ('attaque','milieu','defense','gardien','polyvalent')),
   avatar_url text,
   created_at timestamptz not null default now()
 );
