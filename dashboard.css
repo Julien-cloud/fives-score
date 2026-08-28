@@ -7,3 +7,43 @@
 .trophy:first-child > p:last-of-type {
   color: #c4dbce;
 }
+
+.edit-profile-btn {
+  align-self: flex-start;
+  margin-left: auto;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: white;
+  padding: 9px 11px;
+  font-size: 17px;
+}
+
+.edit-profile-btn:hover {
+  border-color: var(--green2);
+  background: #edf5e7;
+}
+
+.edit-form-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.compact {
+  padding: 8px 11px;
+  font-size: 12px;
+}
+
+.edit-name-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 520px) {
+  .edit-name-grid {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+}
