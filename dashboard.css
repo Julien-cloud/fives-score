@@ -32,19 +32,16 @@
 .switch span:after { content:''; display:block; width:19px; height:19px; border-radius:50%; background:white; transition:.2s; box-shadow:0 1px 4px #0003; }
 .switch input:checked+span { background:var(--green2); }
 .switch input:checked+span:after { transform:translateX(21px); }
-.language-buttons { display:flex; gap:6px; }
-.language-buttons button { border:1px solid var(--line); background:var(--white); color:var(--ink); border-radius:8px; padding:8px 10px; font-size:11px; }
-.language-buttons button.active { border-color:var(--green2); background:#e3ecd7; color:var(--green); font-weight:700; }
 .settings-account { padding-top:19px; }
 
 html[data-theme="dark"] { --cream:#101713; --ink:#edf5ef; --muted:#9baba2; --line:#34443b; --white:#19231e; }
 html[data-theme="dark"] body { background:var(--cream); }
-html[data-theme="dark"] .card,html[data-theme="dark"] .player,html[data-theme="dark"] .match,html[data-theme="dark"] dialog,html[data-theme="dark"] .history-match,html[data-theme="dark"] .generated-team,html[data-theme="dark"] .drag-player,html[data-theme="dark"] .profile-dot-card,html[data-theme="dark"] .mode,html[data-theme="dark"] .language-buttons button { background:var(--white); color:var(--ink); }
+html[data-theme="dark"] .card,html[data-theme="dark"] .player,html[data-theme="dark"] .match,html[data-theme="dark"] dialog,html[data-theme="dark"] .history-match,html[data-theme="dark"] .generated-team,html[data-theme="dark"] .drag-player,html[data-theme="dark"] .profile-dot-card,html[data-theme="dark"] .mode { background:var(--white); color:var(--ink); }
 html[data-theme="dark"] .dropzone,html[data-theme="dark"] .metric,html[data-theme="dark"] .insights>div { background:#141e19; }
 html[data-theme="dark"] .modal input:not([type=radio]),html[data-theme="dark"] .modal select,html[data-theme="dark"] .analytics-toolbar select { background:#111a15; color:var(--ink); border-color:var(--line); }
 html[data-theme="dark"] .edit-profile-btn,html[data-theme="dark"] .info-button { background:#223029; color:var(--ink); }
 html[data-theme="dark"] .profile-donut:before { background:var(--white); }
-html[data-theme="dark"] .mode.active,html[data-theme="dark"] .language-buttons button.active { background:#244332; color:#dff6e7; }
+html[data-theme="dark"] .mode.active { background:#244332; color:#dff6e7; }
 .history-match { grid-template-columns:120px 70px 1fr 110px; }
 .history-contributions { display:flex; justify-content:center; gap:12px; text-align:center; }
 .history-assists b { display:block; font:800 22px Outfit,sans-serif; color:#d18422; }
