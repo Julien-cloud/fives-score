@@ -1,4 +1,4 @@
-# Mettre Fives League en ligne
+# Mettre ATON°PRIME en ligne
 
 1. Crée un projet sur Supabase. Dans SQL Editor, exécute `supabase-schema.sql`. Le script contient les quatre administrateurs déclarés dans `admin-emails.js`.
 2. Dans Authentication > URL Configuration, ajoute l'URL Vercel finale dans Site URL et Redirect URLs.
@@ -7,6 +7,10 @@
 5. Ouvre le site publié et connecte-toi depuis Réglages avec l'une des adresses administratrices, via le lien reçu par e-mail.
 
 Les joueurs n'ont pas besoin de compte : ils lisent les statistiques publiquement. Seules les quatre adresses administratrices peuvent modifier les joueurs et les matchs.
+
+## Migration ATON°PRIME
+
+Exécute une seule fois `supabase-migration-atonprime.sql` dans Supabase > SQL Editor. Cette migration ajoute les passes décisives, l’état blessé et le Mode mystère partagé. Elle conserve intégralement les joueurs, matchs, buts et participations existants.
 
 ## Ajouter le suivi des buts à une base existante
 
