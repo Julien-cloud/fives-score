@@ -12,6 +12,10 @@ Les joueurs n'ont pas besoin de compte : ils lisent les statistiques publiquemen
 
 Exécute une seule fois `supabase-migration-atonprime.sql` dans Supabase > SQL Editor. Cette migration ajoute les passes décisives, l’état blessé et le Mode mystère partagé. Elle conserve intégralement les joueurs, matchs, buts et participations existants.
 
+## Ajouter le dépôt des photos de profil
+
+Exécute une seule fois `supabase-migration-avatar-storage.sql` dans Supabase > SQL Editor. Cette migration crée le bucket public `player-avatars`, limite les images à 5 Mo et réserve leur envoi aux quatre comptes administrateurs.
+
 ## Ajouter le suivi des buts à une base existante
 
 Exécute une seule fois `supabase-migration-goals.sql` dans Supabase > SQL Editor. Cette migration ajoute le nombre de buts à chaque participation sans supprimer ni modifier l'historique existant.
