@@ -1,4 +1,4 @@
-# Mettre ATON°PRIME en ligne
+# Mettre FIVES LEAGUE en ligne
 
 1. Crée un projet sur Supabase. Dans SQL Editor, exécute `supabase-schema.sql`. Le script contient les quatre administrateurs déclarés dans `admin-emails.js`.
 2. Dans Authentication > URL Configuration, ajoute l'URL Vercel finale dans Site URL et Redirect URLs.
@@ -8,13 +8,15 @@
 
 Les joueurs n'ont pas besoin de compte : ils lisent les statistiques publiquement. Seules les quatre adresses administratrices peuvent modifier les joueurs et les matchs.
 
-## Migration ATON°PRIME
+## Migration principale
 
 Exécute une seule fois `supabase-migration-atonprime.sql` dans Supabase > SQL Editor. Cette migration ajoute les passes décisives, l’état blessé et le Mode mystère partagé. Elle conserve intégralement les joueurs, matchs, buts et participations existants.
 
 ## Ajouter le dépôt des photos de profil
 
 Exécute une seule fois `supabase-migration-avatar-storage.sql` dans Supabase > SQL Editor. Cette migration crée le bucket public `player-avatars`, limite les images à 5 Mo et réserve leur envoi aux quatre comptes administrateurs.
+
+Avant l’envoi, le navigateur recadre automatiquement la photo en 512 × 512 px, la convertit en WebP et vise un poids inférieur à 200 Ko. Un seul fichier est conservé par joueur et les anciennes images de FIVES LEAGUE sont supprimées lors de leur remplacement.
 
 ## Ajouter le suivi des buts à une base existante
 
