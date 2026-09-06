@@ -22,6 +22,10 @@ Avant l’envoi, le navigateur recadre automatiquement la photo en 512 × 512 px
 
 Exécute une seule fois `supabase-migration-goals.sql` dans Supabase > SQL Editor. Cette migration ajoute le nombre de buts à chaque participation sans supprimer ni modifier l'historique existant.
 
+## Ajouter les vidéos YouTube aux matchs
+
+Exécute une seule fois `supabase-migration-youtube.sql` dans Supabase > SQL Editor. Cette migration ajoute uniquement un lien YouTube facultatif à chaque match et conserve tout l’historique existant. Les vidéos restent hébergées par YouTube : Supabase ne stocke que leur URL.
+
 ## Ajouter les profils Milieu et Gardien
 
 Exécute une seule fois `supabase-migration-positions.sql` dans Supabase > SQL Editor. Cette migration élargit uniquement la liste des profils autorisés et conserve tous les joueurs existants.

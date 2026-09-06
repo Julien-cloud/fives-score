@@ -17,6 +17,7 @@ create table public.matches (
   motm_id uuid not null references public.players(id),
   score_a int not null default 0 check (score_a >= 0),
   score_b int not null default 0 check (score_b >= 0),
+  youtube_url text,
   created_at timestamptz not null default now()
 );
 create table public.participations (
