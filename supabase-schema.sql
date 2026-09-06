@@ -7,6 +7,7 @@ create table public.players (
   last_name text,
   position text not null default 'polyvalent' check (position in ('attaque','milieu','defense','gardien','polyvalent')),
   avatar_url text,
+  fut_card_url text,
   injured boolean not null default false,
   created_at timestamptz not null default now()
 );
