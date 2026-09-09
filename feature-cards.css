@@ -1,0 +1,11 @@
+.trophy-panel[hidden]{display:none}
+.trophy-heading{gap:16px}
+.trophy-toggle{display:flex;align-items:center;gap:9px;border:1px solid var(--line);border-radius:999px;background:var(--white);color:var(--green);padding:9px 13px;font-size:12px;font-weight:700;box-shadow:0 3px 10px #153d250d}
+.trophy-toggle:hover{border-color:var(--green2);background:#f2f7ee}
+.trophy-toggle b{font-size:18px;line-height:.7}
+.trophy{background:var(--trophy-bg)!important;border-color:color-mix(in srgb,var(--trophy-accent) 32%,transparent)!important}
+.trophy .eyebrow,.trophy .trophy-action,.trophy h3{color:var(--trophy-accent)!important}
+.trophy>p:not(.eyebrow){color:color-mix(in srgb,var(--trophy-accent) 70%,#26332d)!important}
+.player-position,.position-tag{display:inline-block;width:max-content;border-radius:999px;padding:5px 9px;font-size:11px;font-weight:700;color:var(--position-color)!important;background:color-mix(in srgb,var(--position-color) 13%,transparent)!important;border:1px solid color-mix(in srgb,var(--position-color) 30%,transparent)}
+.position-tag{margin:2px 0 0!important}
+@media(max-width:520px){.trophy-heading{align-items:flex-end}.trophy-toggle span{display:none}.trophy-toggle{padding:9px 12px}}
