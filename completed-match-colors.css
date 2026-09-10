@@ -1,0 +1,7 @@
+.completed-team{font-size:13px;font-weight:600;line-height:1.45}
+.completed-team b{font-size:14px}
+.match-teams .completed-team-a,.match-teams .completed-team-a span{color:#d9473f}
+.match-teams .completed-team-b,.match-teams .completed-team-b span{color:#2768c7}
+.result-badge.result-a{background:#ffebe8;color:#b8322b}
+.result-badge.result-b{background:#e8f1ff;color:#1858aa}
+.result-badge.result-n{background:#edf0f2;color:#59636e}
