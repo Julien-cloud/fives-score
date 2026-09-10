@@ -15,7 +15,7 @@
   <link rel="stylesheet" href="composer.css" />
   <link rel="stylesheet" href="dashboard.css" />
   <link rel="stylesheet" href="league.css" />
-  <link rel="stylesheet" href="feature-cards.css" />
+  <link rel="stylesheet" href="coach.css" />
 </head>
 <body>
   <header class="topbar">
@@ -35,6 +35,7 @@
       <button class="tab" data-page="matchs" data-i18n="matches">Matchs</button>
       <button class="tab" data-page="joueurs" data-i18n="players">Joueurs</button>
       <button class="tab" data-page="composer" data-i18n="compose">Composer</button>
+      <button class="tab" data-page="conseils-coach">Les conseils du Coach</button>
       <button class="tab" data-page="la-ligue">La Ligue</button>
     </nav>
 
@@ -86,6 +87,66 @@
         <div class="composer-actions"><button class="secondary reset-composer" id="resetComposerBtn" type="button">↺ Reset</button><button class="primary generate" id="generateTeamsBtn" type="button" data-i18n="generateTeams">Générer les équipes</button></div>
         <div id="builderResult" class="builder-result"></div>
       </div>
+    </section>
+
+    <section class="page coach-page" id="conseils-coach">
+      <header class="coach-hero">
+        <div><p class="eyebrow">CENTRE D’ENTRAÎNEMENT</p><h2>Les conseils du Coach</h2><p>Des séances simples et progressives pour devenir plus propre techniquement, plus vif et plus dangereux devant le but.</p></div>
+        <span class="coach-whistle" aria-hidden="true">📣</span>
+      </header>
+
+      <div class="coach-routine card">
+        <div><p class="eyebrow">LA ROUTINE IDÉALE</p><h3>30 à 40 minutes · 2 fois par semaine</h3><p>Commence doucement, privilégie la qualité du geste et augmente la vitesse seulement lorsque tu gardes le contrôle.</p></div>
+        <ol><li><b>5 min</b><span>Échauffement</span></li><li><b>10 min</b><span>Technique</span></li><li><b>10 min</b><span>Vitesse</span></li><li><b>10 min</b><span>Finition</span></li></ol>
+      </div>
+
+      <nav class="coach-filters" aria-label="Catégories d’entraînement">
+        <a href="#coach-technique">⚽ Technique</a><a href="#coach-vitesse">⚡ Vitesse</a><a href="#coach-precision">🎯 Précision</a><a href="#coach-finition">🥅 Finition</a>
+      </nav>
+
+      <div class="coach-sections">
+        <section class="coach-category technique" id="coach-technique">
+          <div class="coach-category-head"><span>⚽</span><div><p class="eyebrow">MAÎTRISE DU BALLON</p><h3>Technique</h3><p>Gagner en toucher, en coordination et en confiance dans les petits espaces.</p></div></div>
+          <div class="exercise-grid">
+            <article class="exercise-card"><span class="exercise-level easy">Débutant</span><h4>Le carré de conduite</h4><p>Place 4 plots en carré. Conduis le ballon pendant 4 × 45 secondes en alternant intérieur, extérieur et semelle.</p><div class="exercise-meta"><span>⏱ 6 min</span><span>📍 4 plots</span></div></article>
+            <article class="exercise-card"><span class="exercise-level medium">Intermédiaire</span><h4>Slalom deux pieds</h4><p>Traverse 6 plots rapprochés sans perdre le ballon. Une série pied droit, une pied gauche, puis les deux.</p><div class="exercise-meta"><span>🔁 6 passages</span><span>📍 6 plots</span></div></article>
+            <article class="exercise-card"><span class="exercise-level hard">Challenge 100 touches</span><h4>Ball mastery</h4><p>Enchaîne semelles, toe taps, V-pulls et changements de direction. Cherche la fluidité avant la vitesse.</p><div class="exercise-meta"><span>🔁 3 séries</span><span>⚽ 1 ballon</span></div></article>
+          </div>
+          <a class="coach-video" href="https://www.youtube.com/watch?v=vQG1y8WxaqA" target="_blank" rel="noopener noreferrer"><span>▶</span><div><b>Voir une séance complète de maîtrise du ballon</b><small>Tutoriel vidéo sur YouTube ↗</small></div></a>
+        </section>
+
+        <section class="coach-category speed" id="coach-vitesse">
+          <div class="coach-category-head"><span>⚡</span><div><p class="eyebrow">EXPLOSIVITÉ</p><h3>Vitesse avec ballon</h3><p>Accélérer, freiner et repartir sans abandonner le ballon derrière soi.</p></div></div>
+          <div class="exercise-grid">
+            <article class="exercise-card"><span class="exercise-level easy">Fondation</span><h4>Conduite explosive</h4><p>Pousse le ballon sur 10 mètres, sprinte, arrête-le dans une zone d’un mètre puis repars dans l’autre sens.</p><div class="exercise-meta"><span>🔁 8 répétitions</span><span>📏 10 m</span></div></article>
+            <article class="exercise-card"><span class="exercise-level medium">Changements d’appui</span><h4>Le parcours en Y</h4><p>Conduis droit puis change brutalement de direction au signal. Alterne crochet intérieur et extérieur.</p><div class="exercise-meta"><span>🔁 3 × 4</span><span>⏸ 30 s</span></div></article>
+            <article class="exercise-card"><span class="exercise-level hard">Intensité match</span><h4>15/15 avec ballon</h4><p>Alterne 15 secondes de conduite maximale et 15 secondes de récupération en gardant le ballon proche.</p><div class="exercise-meta"><span>⏱ 2 × 4 min</span><span>⏸ 2 min</span></div></article>
+          </div>
+          <a class="coach-video" href="https://www.youtube.com/results?search_query=football+speed+agility+drills+with+ball" target="_blank" rel="noopener noreferrer"><span>▶</span><div><b>Visualiser des exercices de vitesse avec ballon</b><small>Sélection de tutoriels sur YouTube ↗</small></div></a>
+        </section>
+
+        <section class="coach-category accuracy" id="coach-precision">
+          <div class="coach-category-head"><span>🎯</span><div><p class="eyebrow">JUSTESSE DU GESTE</p><h3>Précision</h3><p>Lever la tête, doser ses passes et viser une zone même sous pression.</p></div></div>
+          <div class="exercise-grid">
+            <article class="exercise-card"><span class="exercise-level easy">Seul</span><h4>Les portes</h4><p>Crée 4 petites portes avec des plots. Depuis 5 mètres, marque un point chaque fois que ta passe les traverse.</p><div class="exercise-meta"><span>🎯 5 passes / porte</span><span>🦶 2 pieds</span></div></article>
+            <article class="exercise-card"><span class="exercise-level medium">Avec un mur</span><h4>Contrôle orienté</h4><p>Passe contre un mur, contrôle vers une nouvelle porte puis rejoue en deux touches maximum.</p><div class="exercise-meta"><span>🔁 4 × 1 min</span><span>🦶 Alterner</span></div></article>
+            <article class="exercise-card"><span class="exercise-level hard">Sous pression</span><h4>Cible après effort</h4><p>Fais un aller-retour de 10 mètres puis joue immédiatement une passe dans une cible étroite.</p><div class="exercise-meta"><span>🔁 10 essais</span><span>✅ Note ton score</span></div></article>
+          </div>
+          <a class="coach-video" href="https://www.youtube.com/results?search_query=football+passing+accuracy+drills+tutorial" target="_blank" rel="noopener noreferrer"><span>▶</span><div><b>Voir des ateliers de passes et de précision</b><small>Sélection de tutoriels sur YouTube ↗</small></div></a>
+        </section>
+
+        <section class="coach-category finishing" id="coach-finition">
+          <div class="coach-category-head"><span>🥅</span><div><p class="eyebrow">DEVANT LE BUT</p><h3>Finition</h3><p>Armer plus vite, placer ses frappes et rester lucide dans les derniers mètres.</p></div></div>
+          <div class="exercise-grid">
+            <article class="exercise-card"><span class="exercise-level easy">Placement</span><h4>Les quatre coins</h4><p>Définis quatre zones dans le but. Tire 5 ballons vers chacune, d’abord pied fort puis pied faible.</p><div class="exercise-meta"><span>⚽ 40 frappes</span><span>✅ Compte les cibles</span></div></article>
+            <article class="exercise-card"><span class="exercise-level medium">Rapidité</span><h4>Contrôle-frappe</h4><p>Reçois une passe ou utilise un mur : contrôle orienté et frappe en deux touches maximum.</p><div class="exercise-meta"><span>🔁 4 × 6</span><span>🦶 2 pieds</span></div></article>
+            <article class="exercise-card"><span class="exercise-level hard">Situation de Five</span><h4>Frappe après crochet</h4><p>Attaque un plot comme un défenseur, élimine-le d’un crochet court et frappe avant le troisième contact.</p><div class="exercise-meta"><span>🔁 5 de chaque côté</span><span>⚡ Vitesse match</span></div></article>
+          </div>
+          <a class="coach-video" href="https://www.youtube.com/results?search_query=football+finishing+shooting+drills+tutorial" target="_blank" rel="noopener noreferrer"><span>▶</span><div><b>Visualiser des exercices de finition</b><small>Sélection de tutoriels sur YouTube ↗</small></div></a>
+        </section>
+      </div>
+
+      <aside class="coach-tip"><span>💡</span><div><p class="eyebrow">LE CONSEIL DU COACH</p><h3>Mesure ta progression</h3><p>Note tes scores chaque semaine : portes réussies, cibles touchées et temps du parcours. La régularité fait progresser bien plus qu’une séance énorme de temps en temps.</p></div></aside>
     </section>
 
     <section class="page league-page" id="la-ligue">
