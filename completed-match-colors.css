@@ -5,3 +5,6 @@
 .result-badge.result-a{background:#ffebe8;color:#b8322b}
 .result-badge.result-b{background:#e8f1ff;color:#1858aa}
 .result-badge.result-n{background:#edf0f2;color:#59636e}
+.upcoming-edit-actions{display:flex;gap:10px}
+.upcoming-edit-actions>button{flex:1}
+@media(max-width:520px){.upcoming-edit-actions{flex-direction:column}}
