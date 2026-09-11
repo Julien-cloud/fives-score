@@ -34,6 +34,7 @@ create table public.app_settings (
   mystery_mode boolean not null default false,
   updated_at timestamptz not null default now()
 );
+alter publication supabase_realtime add table public.players, public.matches, public.participations;
 alter table public.players enable row level security;
 alter table public.matches enable row level security;
 alter table public.participations enable row level security;
