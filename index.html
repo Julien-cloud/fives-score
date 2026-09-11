@@ -202,7 +202,7 @@
       <label>Date<input id="matchDate" type="date" required /></label>
       <div class="match-team-board"><div><h3>Team A</h3><div id="matchTeamA" class="dropzone team-zone" data-match-zone="A"></div></div><div><h3>Team B</h3><div id="matchTeamB" class="dropzone team-zone" data-match-zone="B"></div></div></div>
       <div class="zone-title"><h3 data-i18n="availablePlayers">Joueurs disponibles</h3><span id="availableCount" class="count-pill">0</span></div><div id="matchPool" class="dropzone player-pool" data-match-zone="pool"></div><p class="touch-hint" data-i18n="dragHint">Glisse les joueurs ou touche-les pour les déplacer.</p>
-      <button class="primary wide" id="continueMatchBtn" type="button" data-i18n="continueScore">Continuer vers le score</button>
+      <div class="upcoming-edit-actions"><button class="secondary" id="saveUpcomingBtn" type="button" hidden>Enregistrer les équipes</button><button class="primary wide" id="continueMatchBtn" type="button" data-i18n="continueScore">Continuer vers le score</button></div>
     </section>
     <section id="matchStepResult" class="match-step">
       <div class="score-editor"><label>Team A<input id="scoreA" type="number" min="0" max="99" inputmode="numeric" value="0" /></label><span>—</span><label>Team B<input id="scoreB" type="number" min="0" max="99" inputmode="numeric" value="0" /></label></div>
