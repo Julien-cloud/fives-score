@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="coach.css" />
   <link rel="stylesheet" href="upcoming-matches.css" />
   <link rel="stylesheet" href="completed-match-colors.css" />
+  <link rel="stylesheet" href="best-five.css" />
 </head>
 <body>
   <header class="topbar">
@@ -64,6 +65,11 @@
         <div class="analytics-toolbar"><div><p class="eyebrow" data-i18n="distribution">RÉPARTITION</p><h3 data-i18n="squadProfiles">Profils de l'effectif</h3></div><label><span data-i18n="filter">Filtrer</span><select id="profileFilter"><option value="all">Tous les profils</option><option value="attaque">Attaquants</option><option value="defense">Défenseurs</option><option value="milieu">Milieux</option><option value="gardien">Gardiens</option><option value="polyvalent">Polyvalents</option></select></label></div>
         <div class="analytics-grid"><article class="card profile-chart-card"><div id="profileDonut" class="profile-donut"></div><div id="profileLegend" class="profile-legend"></div></article><article class="card"><h3>Volume par profil</h3><div id="profileBars" class="profile-bars"></div></article></div>
         <div id="profileFilteredPlayers" class="profile-filtered-grid"></div>
+        <section class="best-five-section" aria-labelledby="bestFiveTitle">
+          <div class="best-five-heading"><div><p class="eyebrow">L'ÉQUIPE TYPE</p><h3 id="bestFiveTitle">Le meilleur cinq</h3></div><span>5 joueurs</span></div>
+          <p class="best-five-intro">Une sélection automatique fondée sur les performances individuelles, collectives et le profil de chaque joueur.</p>
+          <div class="five-pitch" id="bestFivePitch"></div>
+        </section>
       </div>
     </section>
     <section class="page" id="composer">

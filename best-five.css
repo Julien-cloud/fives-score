@@ -1,0 +1,21 @@
+.best-five-section{margin-top:28px;padding-top:26px;border-top:1px solid var(--line)}
+.best-five-heading{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:6px}
+.best-five-heading h3{font-size:25px}
+.best-five-heading>span{border-radius:999px;background:#e5f2dd;color:var(--green);padding:7px 11px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.best-five-intro{max-width:680px;margin:0 0 18px;color:var(--muted);font-size:13px;line-height:1.5}
+.five-pitch{position:relative;isolation:isolate;min-height:610px;overflow:hidden;border:7px solid #f4f1e7;border-radius:24px;background:repeating-linear-gradient(90deg,#168251 0,#168251 12.5%,#117749 12.5%,#117749 25%);box-shadow:0 16px 40px #153d2524,inset 0 0 0 2px #ffffff80}
+.five-pitch:before{content:'';position:absolute;inset:5%;z-index:-1;border:2px solid #ffffffb8;border-radius:4px;background:linear-gradient(#ffffffb8,#ffffffb8) 50%/100% 2px no-repeat}
+.five-pitch:after{content:'';position:absolute;left:50%;top:50%;z-index:-1;width:116px;aspect-ratio:1;border:2px solid #ffffffb8;border-radius:50%;transform:translate(-50%,-50%)}
+.pitch-box{position:absolute;left:50%;z-index:-1;width:48%;height:17%;border:2px solid #ffffffb8;transform:translateX(-50%)}
+.pitch-box.top{top:5%;border-top:0}.pitch-box.bottom{bottom:5%;border-bottom:0}
+.best-five-player{position:absolute;display:flex;flex-direction:column;align-items:center;width:150px;padding:0;border:0;background:transparent;color:white;text-align:center;transform:translate(-50%,-50%);filter:drop-shadow(0 5px 8px #063c2799)}
+.best-five-player:hover{z-index:3;transform:translate(-50%,-50%) scale(1.05)}
+.best-five-player .lineup-avatar{width:74px;height:74px;overflow:hidden;border:4px solid var(--position-color);border-radius:50%;display:grid;place-items:center;background:#f7f5ed;color:var(--green);font:800 25px Outfit,sans-serif;box-shadow:0 0 0 3px #fff,0 8px 18px #052d1e66}
+.best-five-player .lineup-avatar img{width:100%;height:100%;object-fit:cover}
+.best-five-player b{max-width:100%;margin-top:9px;padding:5px 9px;border-radius:8px;background:#10271ed9;font-size:13px;line-height:1.15}
+.best-five-player small{margin-top:4px;padding:3px 7px;border-radius:999px;background:var(--position-color);color:white;font-size:9px;font-weight:800;letter-spacing:.35px;text-transform:uppercase}
+.best-five-player.slot-goalkeeper{left:50%;top:88%}.best-five-player.slot-defender{left:50%;top:68%}.best-five-player.slot-midfielder{left:50%;top:46%}.best-five-player.slot-left-forward{left:29%;top:22%}.best-five-player.slot-right-forward{left:71%;top:22%}
+.best-five-empty{position:absolute;left:50%;top:50%;width:min(360px,80%);margin:0;padding:16px;border-radius:12px;background:#0b5137dd;color:white;text-align:center;transform:translate(-50%,-50%)}
+html[data-theme="dark"] .best-five-heading>span{background:#24392d;color:#c5f15a}
+@media(max-width:620px){.five-pitch{min-height:520px}.best-five-player{width:112px}.best-five-player .lineup-avatar{width:60px;height:60px}.best-five-player b{font-size:11px}.best-five-player.slot-left-forward{left:25%}.best-five-player.slot-right-forward{left:75%}}
+@media(max-width:390px){.five-pitch{min-height:470px}.best-five-player{width:96px}.best-five-player .lineup-avatar{width:52px;height:52px}.best-five-player b{font-size:10px;padding:4px 6px}.best-five-player small{font-size:8px}}
