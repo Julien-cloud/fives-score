@@ -7,3 +7,14 @@
 .playlist-tracks::-webkit-scrollbar-thumb{background:#8bb8a0;border-radius:99px}
 .playlist-tracks::-webkit-scrollbar-thumb:hover{background:#4f9670}
 @media(max-width:820px){.playlist-tracks{max-height:680px}}
+/* La carte de lecture reprend le vert signature de Fives League. */
+.playlist-grid>.playlist-card:last-child{background:var(--green);border-color:var(--green);color:#fff}
+.playlist-grid>.playlist-card:last-child .eyebrow{color:var(--lime)}
+.playlist-grid>.playlist-card:last-child h3{color:#fff}
+.playlist-grid>.playlist-card:last-child #openSpotifyPlaylist{color:var(--lime)}
+.playlist-grid>.playlist-card:last-child .playlist-count{background:var(--lime);color:var(--green)}
+.playlist-grid>.playlist-card:last-child .secondary{border-color:#ffffff66;background:#ffffff1a;color:#fff}
+.playlist-grid>.playlist-card:last-child .secondary:hover{background:#ffffff2b}
+.playlist-grid>.playlist-card:last-child .playlist-empty{color:#d8e7df}
+.playlist-grid>.playlist-card:last-child .playlist-tracks::-webkit-scrollbar-track{background:#ffffff26}
+.playlist-grid>.playlist-card:last-child .playlist-tracks::-webkit-scrollbar-thumb{background:#c5f15a}
