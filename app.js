@@ -528,7 +528,7 @@ render=function(){renderV8();decorateRecordCardsLeader()};
 $('#heroStats').addEventListener('click',event=>{if(event.target.closest('.record-cards-trigger'))openRecordCardsRanking()});
 $('#heroStats').addEventListener('keydown',event=>{if((event.key==='Enter'||event.key===' ')&&event.target.closest('.record-cards-trigger')){event.preventDefault();openRecordCardsRanking()}});
 /* Playlist Spotify — interface publique, appels sécurisés vers les fonctions Vercel. */
-let spotifySearchResults=[];
+let spotifySearchResults=[],spotifyRefreshTimer=null,spotifyPlaylistLoading=false,spotifyAddedTrackIds=new Set();
 function spotifyScope(){let league=activeLeague?.();return {leagueId:activeLeagueId||'',season:league?.season||'',leagueName:league?.name||'Ligue'}}
 async function spotifyFetch(path,options={}){
   let headers={...(options.headers||{})};
@@ -542,18 +542,23 @@ function spotifyTrackCard(track,action=''){
   return `<article class="spotify-track">${image?`<img src="${esc(image)}" alt="">`:'<span class="spotify-artwork" aria-hidden="true">♫</span>'}<div><b>${esc(name)}</b><small>${esc([artist,album].filter(Boolean).join(' · '))}</small></div>${action}</article>`;
 }
 function playlistMessage(message,type=''){let target=$('#spotifySearchFeedback');if(target){target.className=`playlist-note ${type}`;target.textContent=message||''}}
+function renderSpotifySearchResults(){let target=$('#spotifySearchResults');if(!target)return;target.innerHTML=spotifySearchResults.map(track=>{let added=spotifyAddedTrackIds.has(track.id),label=added?'Ajouté':'+ Ajouter';return spotifyTrackCard(track,`<button class="spotify-add" type="button" data-spotify-add="${esc(track.id)}"${added?' disabled':''}>${label}</button>`)}).join('')}
 function renderSpotifyTracks(tracks=[]){let target=$('#spotifyPlaylistTracks'),count=$('#spotifyTrackCount');if(!target||!count)return;count.textContent=`${tracks.length} titre${tracks.length>1?'s':''}`;target.innerHTML=tracks.length?tracks.map(track=>spotifyTrackCard(track)).join(''):'<p class="playlist-empty">La playlist est prête : propose le premier titre.</p>'}
-async function loadSpotifyPlaylist(){
-  let scope=spotifyScope(),status=$('#spotifyStatusText'),connect=$('#spotifyConnectBtn');
+async function loadSpotifyPlaylist(force=false){
+  let scope=spotifyScope(),status=$('#spotifyStatusText'),connect=$('#spotifyConnectBtn'),refresh=$('#spotifyRefreshBtn');
   if(!status||!scope.leagueId||!scope.season){if(status)status.textContent='Choisis une ligue et une saison pour utiliser la playlist.';return}
-  status.textContent='Chargement de la playlist…';
+  if(spotifyPlaylistLoading)return;
+  spotifyPlaylistLoading=true;
+  if(refresh){refresh.disabled=true;refresh.textContent='Actualisation…'}
+  status.textContent=force?'Synchronisation avec Spotify…':'Chargement de la playlist…';
   try{
-    let response=await spotifyFetch(`/api/spotify/playlist?leagueId=${encodeURIComponent(scope.leagueId)}&season=${encodeURIComponent(scope.season)}`),payload=await response.json();
+    let cacheBust=force?`&refresh=${Date.now()}`:'',response=await spotifyFetch(`/api/spotify/playlist?leagueId=${encodeURIComponent(scope.leagueId)}&season=${encodeURIComponent(scope.season)}${cacheBust}`,{cache:'no-store'}),payload=await response.json();
     if(!response.ok)throw new Error(payload.error||'Impossible de charger la playlist.');
     let link=$('#openSpotifyPlaylist');renderSpotifyTracks(payload.tracks||[]);
     if(payload.playlist){status.textContent=`Playlist connectée · ${payload.playlist.name}`;link.href=payload.playlist.url;link.hidden=false}else{status.textContent='Aucune playlist encore créée pour cette ligue et cette saison.';link.hidden=true}
     connect.hidden=!(admin(false)&&!payload.connected);
   }catch(error){status.textContent='Playlist momentanément indisponible.';renderSpotifyTracks([]);connect.hidden=!admin(false);console.warn(error)}
+  finally{spotifyPlaylistLoading=false;if(refresh){refresh.disabled=false;refresh.textContent='↻ Actualiser'}}
 }
 async function searchSpotifyTracks(query){
   playlistMessage('Recherche sur Spotify…');$('#spotifySearchResults').innerHTML='';
@@ -562,7 +567,7 @@ async function searchSpotifyTracks(query){
     if(!response.ok)throw new Error(payload.error||'La recherche a échoué.');
     spotifySearchResults=payload.tracks||[];
     playlistMessage(spotifySearchResults.length?`${spotifySearchResults.length} résultat${spotifySearchResults.length>1?'s':''} trouvé${spotifySearchResults.length>1?'s':''}.`:'Aucun résultat trouvé.');
-    $('#spotifySearchResults').innerHTML=spotifySearchResults.map(track=>spotifyTrackCard(track,`<button class="spotify-add" type="button" data-spotify-add="${esc(track.id)}">+ Ajouter</button>`)).join('');
+        renderSpotifySearchResults();
   }catch(error){playlistMessage(error.message||'Recherche indisponible.','playlist-error')}
 }
 async function addSpotifyTrack(id){
@@ -572,7 +577,7 @@ async function addSpotifyTrack(id){
     let response=await spotifyFetch('/api/spotify/playlist',{method:'POST',body:JSON.stringify({...scope,track})}),payload=await response.json();
     if(!response.ok)throw new Error(payload.error||'Impossible d’ajouter ce titre.');
     playlistMessage(`« ${track.name} » a été ajouté à la playlist.`, 'playlist-success');
-    $('#spotifySearchResults').innerHTML='';spotifySearchResults=[];await loadSpotifyPlaylist();
+    spotifyAddedTrackIds.add(track.id);renderSpotifySearchResults();await loadSpotifyPlaylist();
   }catch(error){playlistMessage(error.message||'Ajout indisponible.','playlist-error')}
 }
 async function connectSpotify(){
@@ -586,7 +591,12 @@ document.addEventListener('DOMContentLoaded',()=>{
   $('#spotifySearchForm')?.addEventListener('submit',event=>{event.preventDefault();let query=$('#spotifySearchInput').value.trim();if(query.length<2)return playlistMessage('Entre au moins deux caractères.','playlist-error');searchSpotifyTracks(query)});
   $('#spotifySearchResults')?.addEventListener('click',event=>{let button=event.target.closest('[data-spotify-add]');if(button)addSpotifyTrack(button.dataset.spotifyAdd)});
   $('#spotifyConnectBtn')?.addEventListener('click',connectSpotify);
-  $$('.tab[data-page="playlist"]').forEach(button=>button.addEventListener('click',loadSpotifyPlaylist));
+  $('#spotifyRefreshBtn')?.addEventListener('click',()=>loadSpotifyPlaylist(true));
+  $$('.tab[data-page="playlist"]').forEach(button=>button.addEventListener('click',()=>{
+  setTimeout(loadSpotifyPlaylist,0);
+  clearInterval(spotifyRefreshTimer);
+  spotifyRefreshTimer=setInterval(()=>{if($('#playlist')?.classList.contains('active'))loadSpotifyPlaylist()},30000);
+}));
   if(new URLSearchParams(location.search).get('spotify')==='connected'){history.replaceState({},'',location.pathname+location.hash);toast('Spotify est maintenant connecté.');setTimeout(loadSpotifyPlaylist,250)}
 });
 const cloudLoadPlaylist=cloudLoad;
