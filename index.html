@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="upgrade.css" />
   <link rel="stylesheet" href="composer.css" />
   <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="home.css" />
   <link rel="stylesheet" href="league.css" />
   <link rel="stylesheet" href="feature-cards.css" />
   <link rel="stylesheet" href="coach.css" />
@@ -40,30 +41,38 @@
     <div class="top-actions"><span class="connection-status" id="connectionStatus">Mode démo</span><button class="icon-button" id="settingsBtn" aria-label="Réglages">⚙</button></div>
   </header>
   <main>
-    <section class="hero" id="accueil">
-      <p class="eyebrow" id="leagueContext">FIVES LEAGUE · SAISON 2026-2027</p>
-      <h1 data-i18n="heroTitle">Les stats du terrain.</h1>
-      <p data-i18n="heroSubtitle">Chaque match compte. Qui soulèvera les trophées ?</p>
-      <div class="hero-stats" id="heroStats"></div>
-    </section>
-
     <nav class="tabs" aria-label="Navigation">
-      <button class="tab active" data-page="classement" data-i18n="ranking">Classement</button>
+      <button class="tab active" data-page="accueil">Accueil</button>
+      <button class="tab" data-page="classement" data-i18n="ranking">Classement</button>
       <button class="tab" data-page="matchs" data-i18n="matches">Matchs</button>
       <button class="tab" data-page="joueurs" data-i18n="players">Joueurs</button>
       <button class="tab" data-page="composer" data-i18n="compose">Composer</button>
       <button class="tab" data-page="playlist">Playlist</button>
-      <button class="tab" data-page="conseils-coach">Exercices Pour Progresser</button>
+      <button class="tab" data-page="conseils-coach">Exercices</button>
       <button class="tab" data-page="la-ligue">La Ligue</button>
     </nav>
 
-    <section class="page active" id="classement">
-      <header class="league-intro feature-intro"><div><p class="eyebrow">LE TABLEAU DE BORD DE LA SAISON</p><h2>Qui mène la course aux trophées ?</h2><p>Le classement réunit les résultats de la ligue active : trois points pour une victoire, un point pour un nul. Les statistiques individuelles, les distinctions MVP et les performances offensives permettent de suivre la saison match après match.</p></div><span class="league-ball" aria-hidden="true">🏆</span></header>
+    <section class="page active home-page" id="accueil">
+      <header class="hero home-hero" id="landing">
+        <p class="eyebrow" id="leagueContext">FIVES LEAGUE · SAISON 2026-2027</p>
+        <h1 data-i18n="heroTitle">La saison, en direct.</h1>
+        <p data-i18n="heroSubtitle">Le prochain five, la forme du moment et les leaders de la ligue.</p>
+        <div class="hero-stats" id="heroStats"></div>
+        <span class="home-hero-icon" aria-hidden="true">📊</span>
+      </header>
+      <div class="home-dashboard-grid">
+        <div class="home-overview-stack"><article id="homeUpcomingMatch" class="card home-upcoming-card"></article><article class="card home-season-card"><p class="eyebrow">LA SAISON EN BREF</p><h3>Le pouls de la ligue</h3><div id="homeSeasonPulse" class="home-pulse"></div><div id="homeRecordHolder" class="home-record-holder"></div></article></div>
+        <article class="card home-leaders-card"><p class="eyebrow">À SUIVRE</p><h3>Les leaders du moment</h3><div id="homeLeaders" class="home-leaders"></div></article>
+      </div>
+      <section class="card home-best-five" aria-labelledby="homeBestFiveTitle"><div class="best-five-heading"><div><p class="eyebrow">L’ÉQUIPE TYPE</p><h3 id="homeBestFiveTitle">Le meilleur cinq</h3></div><div class="best-five-badges"><span>5 joueurs</span><strong id="homeBestFiveWinChance">—</strong></div></div><p class="best-five-intro">Une sélection issue des performances, de la régularité et des profils de jeu de la saison.</p><div class="five-pitch" id="homeBestFivePitch"></div></section>
+    </section>
+    <section class="page" id="classement">
+      <header class="league-intro feature-intro"><div><p class="eyebrow">LE TABLEAU DE BORD DE LA SAISON</p><h2>Qui mène la course aux trophées ?</h2><p>Le classement réunit les résultats de la ligue active : trois points pour une victoire, un point pour un nul. Les statistiques individuelles, les distinctions MVP et les performances offensives permettent de suivre la saison match après match.</p><div id="rankingRecordHolder" class="ranking-record-holder"></div></div><span class="league-ball" aria-hidden="true">🏆</span></header>
       <div class="section-heading trophy-heading"><div><p class="eyebrow">LE PODIUM</p><h2 data-i18n="trophyRace">Course aux trophées</h2></div><button class="trophy-toggle" id="trophyToggle" type="button" aria-expanded="true" aria-controls="trophyPanel"><span>Masquer les cartes</span><b aria-hidden="true">⌃</b></button></div>
       <div class="trophy-panel" id="trophyPanel"><div class="trophy-grid" id="trophyGrid"></div></div>
       <div class="card ranking-card">
         <div class="card-title"><div class="title-with-info"><h3 data-i18n="generalRanking">Classement général</h3><button class="info-button" type="button" data-info-key="points" aria-label="Comment sont calculés les points ?">i</button></div><label class="ranking-filter"><span data-i18n="sortBy">Trier par</span><select id="rankingSort" data-metric="points"><option value="points">Points</option><option value="rate">% victoire</option><option value="goals">Buts</option><option value="assists">Passes dé.</option></select></label></div>
-        <div class="table-wrap"><table><thead><tr><th>#</th><th data-i18n="player">Joueur</th><th>MJ</th><th>V</th><th>N</th><th>D</th><th>Points</th><th data-i18n="goals">Buts</th><th data-i18n="assistsShort">Passes dé.</th><th>% V</th></tr></thead><tbody id="rankingBody"></tbody></table></div>
+        <p class="ranking-confidence-note">Fiabilité <button class="info-button" type="button" data-info-key="reliability" aria-label="Comment est calculée la fiabilité ?">i</button></p><div class="table-wrap"><table><thead><tr><th>#</th><th data-i18n="player">Joueur</th><th>MJ</th><th>V</th><th>N</th><th>D</th><th>Points</th><th data-i18n="goals">Buts</th><th data-i18n="assistsShort">Passes dé.</th><th>% V</th><th>Fiabilité</th></tr></thead><tbody id="rankingBody"></tbody></table></div>
       </div>
     </section>
 
@@ -192,7 +201,7 @@
         <div class="spotify-status" id="spotifyStatus"><span class="spotify-mark" aria-hidden="true">♫</span><div><b>Playlist Spotify</b><p id="spotifyStatusText">Chargement de la playlist…</p></div><button id="spotifyConnectBtn" class="secondary" type="button" hidden>Connecter Spotify</button></div>
         <div class="playlist-grid">
           <article class="card playlist-card"><p class="eyebrow">AJOUTER UN TITRE</p><h3>Quelle musique tu veux entendre ?</h3><form id="spotifySearchForm" class="playlist-search"><input id="spotifySearchInput" type="search" maxlength="120" autocomplete="off" placeholder="Titre, artiste ou album" aria-label="Rechercher une musique Spotify"><button class="primary" type="submit">Rechercher</button></form><p class="playlist-note">Tout le monde peut proposer un titre. Les administrateurs peuvent retirer un morceau directement depuis Spotify.</p><div id="spotifySearchFeedback" class="playlist-note" aria-live="polite"></div><div id="spotifySearchResults" class="playlist-results" aria-live="polite"></div></article>
-          <article class="card playlist-card"><div class="playlist-head"><div><p class="eyebrow">EN CE MOMENT</p><h3>La playlist active</h3></div><div class="playlist-head-actions"><span id="spotifyTrackCount" class="playlist-count">0 titre</span><button id="spotifyRefreshBtn" class="secondary compact" type="button">↻ Actualiser</button></div></div><a id="openSpotifyPlaylist" href="#" target="_blank" rel="noopener noreferrer" hidden>Ouvrir dans Spotify ↗</a><div id="spotifyPlaylistTracks" class="playlist-tracks"></div></article>
+          <article class="card playlist-card playlist-active-card"><div class="playlist-head"><div><p class="eyebrow">EN CE MOMENT</p><h3>La playlist active</h3></div><div class="playlist-head-actions"><span id="spotifyTrackCount" class="playlist-count">0 titre</span><button id="spotifyRefreshBtn" class="secondary compact" type="button">↻ Actualiser</button></div></div><a id="openSpotifyPlaylist" href="#" target="_blank" rel="noopener noreferrer" hidden>Ouvrir dans Spotify ↗</a><div id="spotifyPlaylistTracks" class="playlist-tracks"></div></article>
         </div>
       </div>
     </section>
