@@ -655,4 +655,33 @@ renderMatchCard=function(match){
   return template.innerHTML;
 };
 document.addEventListener('click',event=>{let button=event.target.closest('[data-home-page]');if(button)activatePage(button.dataset.homePage)});
+/* Les matchs à venir peuvent aussi être annulés par un administrateur. */
+const renderMatchCardWithUpcomingDelete=renderMatchCard;
+renderMatchCard=function(match){
+  let card=renderMatchCardWithUpcomingDelete(match);
+  if(match.result!=='P'||!admin(false))return card;
+  let template=document.createElement('template');
+  template.innerHTML=card;
+  let edit=template.content.querySelector('.edit-match-btn');
+  if(!edit)return card;
+  let actions=document.createElement('div'),remove=document.createElement('button');
+  actions.className='upcoming-edit-actions';
+  remove.type='button';
+  remove.className='danger compact delete-match-btn';
+  remove.textContent='🗑️ Supprimer le match';
+  edit.replaceWith(actions);
+  actions.append(edit,remove);
+  return template.innerHTML;
+};
+/* Une composition ne peut être générée qu'avec deux effectifs identiques. */
+$('#generateTeamsBtn').onclick=()=>{
+  if(composeMode==='manual'){
+    if(!composeManual.A.length||!composeManual.B.length)return toast('Place au moins un joueur dans chaque équipe.');
+    if(composeManual.A.length!==composeManual.B.length)return toast('Le nombre de joueurs doit être égal dans les deux équipes.');
+    return showTeams({A:[...composeManual.A],B:[...composeManual.B]});
+  }
+  if(composeSheet.length<2)return toast('Ajoute au moins deux joueurs à la feuille de match.');
+  if(composeSheet.length%2)return toast('Le nombre de joueurs doit être égal dans les deux équipes. Ajoute ou retire un joueur de la feuille de match.');
+  showTeams(composeMode==='fair'?fair(composeSheet):composeMode==='human'?human(composeSheet):random(composeSheet));
+};
 render();
