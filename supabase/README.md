@@ -44,3 +44,13 @@ alter table public.matches
   add column if not exists shirt_a text,
   add column if not exists shirt_b text;
 ```
+
+## Lien de réservation des matchs à venir
+
+La migration distante `add_match_reservation_url` ajoute un lien facultatif au match. Elle est appliquée en test et en production :
+
+```sql
+alter table public.matches add column if not exists reservation_url text;
+```
+
+Le lien est visible par les visiteurs qui consultent le match. Ne pas y enregistrer de données confidentielles.
