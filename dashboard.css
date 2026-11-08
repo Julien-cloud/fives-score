@@ -136,3 +136,17 @@ html[data-theme="dark"] .avatar-upload:hover,html[data-theme="dark"] .avatar-upl
     gap: 0;
   }
 }
+
+.ranking-card th.goal-difference { white-space:nowrap; }
+.ranking-diff,
+.ranking-filter select[data-metric="diff"] {
+  background:#d5f5ff;
+  color:#075473;
+  border-color:#1686ae;
+}
+html[data-theme="dark"] .ranking-diff,
+html[data-theme="dark"] .ranking-filter select[data-metric="diff"] {
+  background:#123c50;
+  color:#9ce7ff;
+  border-color:#4bbbe2;
+}
