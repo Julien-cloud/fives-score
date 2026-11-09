@@ -74,20 +74,22 @@ function matchVenue(address) {
   const destination = encodeURIComponent(address);
   return `<section class="match-venue" aria-label="Lieu du match">
     <strong>📍 Lieu du match</strong>
-    <p>${esc(address)}</p>
-    <div class="match-venue-actions">
-      <a class="secondary compact" href="https://www.google.com/maps/dir/?api=1&amp;destination=${destination}" target="_blank" rel="noopener noreferrer">Google Maps</a>
-      <a class="secondary compact" href="https://waze.com/ul?q=${destination}&amp;navigate=yes" target="_blank" rel="noopener noreferrer">Waze</a>
-      <a class="secondary compact" href="https://maps.apple.com/directions?destination=${destination}" target="_blank" rel="noopener noreferrer">Plans d’Apple</a>
-      <button class="secondary compact" type="button" data-copy-match-address>Copier l’adresse</button>
-    </div>
+    <details class="match-venue-picker">
+      <summary>${esc(address)}</summary>
+      <div class="match-venue-actions">
+        <a class="secondary compact" href="https://www.google.com/maps/dir/?api=1&amp;destination=${destination}" target="_blank" rel="noopener noreferrer">Google Maps</a>
+        <a class="secondary compact" href="https://waze.com/ul?q=${destination}&amp;navigate=yes" target="_blank" rel="noopener noreferrer">Waze</a>
+        <a class="secondary compact" href="https://maps.apple.com/directions?destination=${destination}" target="_blank" rel="noopener noreferrer">Plans d’Apple</a>
+        <button class="secondary compact" type="button" data-copy-match-address>Copier l’adresse</button>
+      </div>
+    </details>
   </section>`;
 }
 
 document.addEventListener('click', async event => {
   const button = event.target.closest('[data-copy-match-address]');
   if (!button) return;
-  const address = button.closest('.match-venue').querySelector('p');
+  const address = button.closest('.match-venue-picker').querySelector('summary');
   try {
     await navigator.clipboard.writeText(address.textContent);
     toast('Adresse copiée.');
@@ -771,11 +773,11 @@ const statisticsWithConfidence=stats;
 stats=function(){let list=statisticsWithConfidence();list.forEach(player=>player.statConfidence=statisticReliability(player));return list};
 function renderHomeDashboard(st=stats()){
   let pulse=$('#homeSeasonPulse'),leaders=$('#homeLeaders'),upcomingCard=$('#homeUpcomingMatch'),homeRecord=$('#homeRecordHolder'),rankingRecord=$('#rankingRecordHolder'),homePitch=$('#homeBestFivePitch'),homeChance=$('#homeBestFiveWinChance');if(!pulse||!leaders)return;
-  let completed=data.matches.filter(match=>match.result!=='P'),upcoming=data.matches.filter(match=>match.result==='P'&&!isUnplayedMatch(match)).sort((a,b)=>`${a.date}${a.kickoffTime||''}`.localeCompare(`${b.date}${b.kickoffTime||''}`))[0],formatDate=value=>new Date(value+'T12:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  let completed=data.matches.filter(match=>match.result!=='P'),upcoming=data.matches.filter(match=>match.result==='P'&&!isUnplayedMatch(match)).sort((a,b)=>`${a.date}${a.kickoffTime||''}`.localeCompare(`${b.date}${b.kickoffTime||''}`))[0],formatDate=value=>new Date(value+'T12:00').toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long',year:'numeric'}).replace(/^./, firstLetter => firstLetter.toLocaleUpperCase('fr-FR'));
   let upcomingTime=upcoming?.kickoffTime?`Coup d’envoi à <b>${esc(upcoming.kickoffTime.replace(':','h'))}</b>`:'Horaire à confirmer';
   if(upcomingCard){
     let team=(side,names,shirt)=>`<section class="home-upcoming-team home-upcoming-team-${side.toLowerCase()}"><h4>Team ${side}</h4>${shirtBadge(shirt)||'<small class="home-shirt-undefined">Maillot à définir</small>'}<p class="home-team-players">${names.length?names.map(name=>esc(labelForName(name))).join(', '):'Joueurs à confirmer'}</p></section>`;
-    upcomingCard.innerHTML=upcoming?`<p class="eyebrow">MATCH À VENIR</p><div><span aria-hidden="true">⚽</span><section><h3>${esc(formatDate(upcoming.date))}</h3><p>${upcomingTime}</p></section></div><section class="home-upcoming-teams" aria-label="Équipes et joueurs convoqués">${team('A',upcoming.a,upcoming.shirtA)}${team('B',upcoming.b,upcoming.shirtB)}</section>${matchVenue(upcoming.address)}${reservationLink(upcoming.reservationUrl)}`:`<p class="eyebrow">MATCH À VENIR</p><div><span aria-hidden="true">📅</span><section><h3>Aucun match programmé</h3><p>La prochaine feuille de match apparaîtra ici.</p></section></div>`;
+    upcomingCard.innerHTML=upcoming?`<div class="home-card-heading"><span class="home-card-icon" aria-hidden="true">⏳</span><section><p class="eyebrow">MATCH À VENIR</p><h3>${esc(formatDate(upcoming.date))}</h3><p>${upcomingTime}</p></section></div><section class="home-upcoming-teams" aria-label="Équipes et joueurs convoqués">${team('A',upcoming.a,upcoming.shirtA)}${team('B',upcoming.b,upcoming.shirtB)}</section>${matchVenue(upcoming.address)}${reservationLink(upcoming.reservationUrl)}`:`<div class="home-card-heading"><span class="home-card-icon" aria-hidden="true">📅</span><section><p class="eyebrow">MATCH À VENIR</p><h3>Aucun match programmé</h3><p>La prochaine feuille de match apparaîtra ici.</p></section></div>`;
   }
   let totalGoals=completed.reduce((sum,match)=>sum+(+match.scoreA||0)+(+match.scoreB||0),0),totalSpent=completed.length*10*16.5,activePlayers=st.filter(player=>player.m>0),averagePlayerSpent=activePlayers.length?activePlayers.reduce((sum,player)=>sum+player.m*16.5,0)/activePlayers.length:0,draws=completed.filter(match=>(+match.scoreA||0)===(+match.scoreB||0)).length,mostGoals=completed.reduce((max,match)=>Math.max(max,(+match.scoreA||0)+(+match.scoreB||0)),0),averageGoals=completed.length?totalGoals/completed.length:0,averageGap=completed.length?completed.reduce((sum,match)=>sum+Math.abs((+match.scoreA||0)-(+match.scoreB||0)),0)/completed.length:0,money=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(totalSpent),averageMoney=new Intl.NumberFormat('fr-FR',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(averagePlayerSpent);
   pulse.innerHTML=`<div><b>${money}</b><small>dépensés dans les fives</small></div><div><b>${shown(completed.length)}</b><small>match${completed.length>1?'s':''} joué${completed.length>1?'s':''}</small></div><div><b>${shown(data.players.length)}</b><small>joueur${data.players.length>1?'s':''} inscrit${data.players.length>1?'s':''}</small></div><div><b>${shown(totalGoals)}</b><small>buts enregistrés</small></div><div><b>${completed.length?averageGoals.toFixed(1).replace('.',','):'—'}</b><small>buts par match</small></div><div><b>${activePlayers.length?averageMoney:'—'}</b><small>budget moyen par joueur</small></div><div><b>${shown(draws)}</b><small>match${draws>1?'s':''} nul${draws>1?'s':''}</small></div><div><b>${completed.length?averageGap.toFixed(1).replace('.',','):'—'}</b><small>écart moyen au score</small></div><div><b>${shown(mostGoals)}</b><small>record de buts en un match</small></div>`;
