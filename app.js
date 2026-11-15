@@ -388,7 +388,96 @@ function openAvatarPreview(image){let dialog=$('#avatarPreviewDialog'),preview=$
 $('#playerDetailBody').addEventListener('click',e=>{let image=e.target.closest('.profile-head .profile-avatar img');if(image)openAvatarPreview(image)});$('#playerDetailBody').addEventListener('keydown',e=>{if(!['Enter',' '].includes(e.key))return;let avatar=e.target.closest('.profile-head .profile-avatar');if(!avatar?.querySelector('img'))return;e.preventDefault();openAvatarPreview(avatar.querySelector('img'))});
 function moveCompose(n,to){composeSheet=composeSheet.filter(x=>x!==n);if(to==='sheet')composeSheet.push(n);drawComposer()}
 function moveManual(n,to){composeManual.A=composeManual.A.filter(x=>x!==n);composeManual.B=composeManual.B.filter(x=>x!==n);if(to==='A'||to==='B')composeManual[to].push(n);drawComposer()}
-function drawComposer(){if(!$('#composeBench'))return;let manual=composeMode==='manual';$('#autoSelectionBoard').hidden=manual;$('#autoSelectionBoard').style.display=manual?'none':'';$('#manualSelectionBoard').hidden=!manual;$('#manualSelectionBoard').style.display=manual?'':'none';$('#generateTeamsBtn').textContent=manual?(language==='fr'?'Calculer le pronostic':'Calculate prediction'):tr('generateTeams');$('#composerInstructions').textContent=manual?(language==='fr'?'Glisse les joueurs du banc vers Team A ou Team B, puis calcule le pronostic de ta composition.':'Drag players from the bench to Team A or Team B, then calculate the prediction.'):(language==='fr'?'Place les participants sur la feuille de match, choisis un style, puis laisse le système former les équipes.':'Place participants on the match sheet, choose a style, then let the system build the teams.');if(manual){let bench=data.players.map(p=>p.name).filter(n=>!composeManual.A.includes(n)&&!composeManual.B.includes(n));$('#composeManualBench').innerHTML=$('#composeManualA').innerHTML=$('#composeManualB').innerHTML='';bench.forEach(n=>$('#composeManualBench').append(chip(n,'composeManual','bench')));composeManual.A.forEach(n=>$('#composeManualA').append(chip(n,'composeManual','A')));composeManual.B.forEach(n=>$('#composeManualB').append(chip(n,'composeManual','B')));$('#manualBenchCount').textContent=bench.length;$('#manualTeamACount').textContent=composeManual.A.length;$('#manualTeamBCount').textContent=composeManual.B.length;return}let bench=data.players.map(p=>p.name).filter(n=>!composeSheet.includes(n));$('#composeBench').innerHTML=$('#composeSheet').innerHTML='';bench.forEach(n=>$('#composeBench').append(chip(n,'compose','bench')));composeSheet.forEach(n=>$('#composeSheet').append(chip(n,'compose','sheet')));$('#benchCount').textContent=bench.length;$('#sheetCount').textContent=composeSheet.length}
+function teammateHistory(matches) {
+  const history = new Map();
+  for (const match of matches) {
+    if (!['A', 'B', 'N'].includes(match.result)) continue;
+    for (const team of [match.a, match.b]) {
+      const names = [...new Set(team)].sort();
+      names.forEach((first, index) => {
+        for (const second of names.slice(index + 1)) {
+          const key = JSON.stringify([first, second]);
+          const previous = history.get(key);
+          history.set(key, {
+            count: (previous?.count ?? 0) + 1,
+            date: !previous || match.date > previous.date ? match.date : previous.date
+          });
+        }
+      });
+    }
+  }
+  return history;
+}
+
+function renderTeammateHistory() {
+  const filter = $('#teammateHistoryPlayer');
+  const selected = filter.value;
+  const manual = composeMode === 'manual';
+  const roster = new Map(data.players.map(player => [player.name, player]));
+  const names = [...roster.keys()]
+    .sort((a, b) => labelForName(a).localeCompare(labelForName(b), 'fr'));
+  filter.innerHTML = names.map(name => `<option value="${esc(name)}">${esc(labelForName(name))}</option>`).join('');
+  filter.value = names.includes(selected) ? selected : names[0] || '';
+  filter.disabled = names.length < 2;
+  const focus = filter.value;
+  $('#teammateHistoryAvatar').innerHTML = focus ? avatar(roster.get(focus), 'teammate-history-avatar') : '';
+  const status = $('#teammateHistoryStatus');
+  const rows = $('#teammateHistoryRows');
+  rows.hidden = names.length < 2;
+  if (names.length < 2) {
+    rows.innerHTML = '';
+    status.textContent = 'L’historique sera disponible dès que la ligue comptera deux joueurs.';
+    return;
+  }
+
+  const history = teammateHistory(data.matches);
+  const position = $('#teammateHistoryPosition').value;
+  const neverTogether = $('#teammateHistoryNever').checked;
+  const hideInjured = $('#teammateHistoryHideInjured').checked;
+  const dayNumber = date => Date.parse(date + 'T00:00:00Z') / 86400000;
+  const currentDay = dayNumber(today());
+  const teammates = names.filter(name => name !== focus).map(name => ({
+    name, ...history.get(JSON.stringify([focus, name].sort()))
+  }));
+  teammates.sort((a, b) => (a.date || '').localeCompare(b.date || ''));
+  const maxDays = teammates.reduce((max, {date}) => date ? Math.max(max, currentDay - dayNumber(date)) : max, 1);
+  const range = $('#teammateHistoryDays');
+  range.max = Math.max(30, maxDays, Number(range.value));
+  range.disabled = neverTogether;
+  const minimumDays = Number(range.value);
+  const rangeText = minimumDays ? `${minimumDays} jour${minimumDays > 1 ? 's' : ''} ou plus` : 'Tous les délais';
+  $('#teammateHistoryDaysValue').textContent = rangeText;
+  range.setAttribute('aria-valuetext', rangeText);
+  const visible = teammates.filter(({name, date}) => {
+    const teammate = roster.get(name);
+    if (hideInjured && teammate.injured) return false;
+    if (position && (teammate.position || 'polyvalent') !== position) return false;
+    if (neverTogether) return !date;
+    if (minimumDays) return Boolean(date && currentDay - dayNumber(date) >= minimumDays);
+    return true;
+  });
+  rows.hidden = !visible.length;
+  status.textContent = visible.length ? '' : 'Aucun coéquipier ne correspond aux filtres.';
+  rows.innerHTML = visible.map(({name, date, count}) => {
+    const teammate = roster.get(name);
+    const role = positionMeta[teammate.position || 'polyvalent']?.label || positionMeta.polyvalent.label;
+    const days = date ? Math.max(0, currentDay - dayNumber(date)) : null;
+    const lastPlayed = date ? new Date(date + 'T12:00:00').toLocaleDateString('fr-FR') : '—';
+    const waiting = days === null ? 'Jamais ensemble' : days === 0 ? 'Aujourd’hui' : `Il y a ${days} jour${days > 1 ? 's' : ''}`;
+    const sameTeam = manual && [composeManual.A, composeManual.B].some(team => team.includes(focus) && team.includes(name));
+    return `<li class="teammate-chart-item">
+      <div class="teammate-chart-heading"><strong>${esc(labelForName(name))}</strong><span>${waiting}</span></div>
+      ${days === null ? '' : `<div class="teammate-chart-track" aria-hidden="true"><span style="width:${100 * days / maxDays}%"></span></div>`}
+      <small>${role}${teammate.injured ? ' · Blessé' : ''} · ${date ? `Dernier match le ${lastPlayed} · ` : ''}${count ?? 0} match${count > 1 ? 's' : ''} ensemble</small>
+      ${sameTeam ? '<small>Dans la même équipe pour ce match</small>' : ''}
+    </li>`;
+  }).join('');
+}
+$('.teammate-history-filters').onchange = renderTeammateHistory;
+$('#teammateHistoryPlayer').onchange = renderTeammateHistory;
+$('#teammateHistoryDays').oninput = renderTeammateHistory;
+
+function drawComposer(){if(!$('#composeBench'))return;renderTeammateHistory();let manual=composeMode==='manual';$('#autoSelectionBoard').hidden=manual;$('#autoSelectionBoard').style.display=manual?'none':'';$('#manualSelectionBoard').hidden=!manual;$('#manualSelectionBoard').style.display=manual?'':'none';$('#generateTeamsBtn').textContent=manual?(language==='fr'?'Calculer le pronostic':'Calculate prediction'):tr('generateTeams');$('#composerInstructions').textContent=manual?(language==='fr'?'Glisse les joueurs du banc vers Team A ou Team B, puis calcule le pronostic de ta composition.':'Drag players from the bench to Team A or Team B, then calculate the prediction.'):(language==='fr'?'Place les participants sur la feuille de match, choisis un style, puis laisse le système former les équipes.':'Place participants on the match sheet, choose a style, then let the system build the teams.');if(manual){let bench=data.players.map(p=>p.name).filter(n=>!composeManual.A.includes(n)&&!composeManual.B.includes(n));$('#composeManualBench').innerHTML=$('#composeManualA').innerHTML=$('#composeManualB').innerHTML='';bench.forEach(n=>$('#composeManualBench').append(chip(n,'composeManual','bench')));composeManual.A.forEach(n=>$('#composeManualA').append(chip(n,'composeManual','A')));composeManual.B.forEach(n=>$('#composeManualB').append(chip(n,'composeManual','B')));$('#manualBenchCount').textContent=bench.length;$('#manualTeamACount').textContent=composeManual.A.length;$('#manualTeamBCount').textContent=composeManual.B.length;return}let bench=data.players.map(p=>p.name).filter(n=>!composeSheet.includes(n));$('#composeBench').innerHTML=$('#composeSheet').innerHTML='';bench.forEach(n=>$('#composeBench').append(chip(n,'compose','bench')));composeSheet.forEach(n=>$('#composeSheet').append(chip(n,'compose','sheet')));$('#benchCount').textContent=bench.length;$('#sheetCount').textContent=composeSheet.length}
 function profileCounts(team){let keys=['attaque','milieu','defense','gardien','polyvalent'],counts=Object.fromEntries(keys.map(key=>[key,0]));team.forEach(name=>counts[player(name)?.position||'polyvalent']++);return counts}
 function teamProfile(team){let counts=profileCounts(team);return {attack:counts.attaque+counts.milieu*.55+counts.polyvalent*.35,defense:counts.defense+counts.gardien*1.25+counts.milieu*.25+counts.polyvalent*.35,goalkeepers:counts.gardien}}
 function profilePenalty(A,B){let a=teamProfile(A),b=teamProfile(B),players=A.length+B.length,penalty=Math.abs(a.attack-b.attack)*7+Math.abs(a.defense-b.defense)*8;if(players>=6)penalty+=Math.abs(a.goalkeepers-b.goalkeepers)*13;return penalty}
@@ -398,10 +487,47 @@ function candidateTeams(names,limit=120000){let totalA=Math.ceil(names.length/2)
 function fair(names){let ratings=compositionRatings(names),best;candidateTeams(names).forEach(candidate=>{candidate.score=balance(candidate.A,candidate.B,ratings);if(!best||candidate.score<best.score)best=candidate});return best||random(names)}
 function humanSpice(candidate,ratings){let ranked=[...candidate.A,...candidate.B].sort((a,b)=>ratings[b]-ratings[a]),teamFor=name=>candidate.A.includes(name)?'A':'B',topPair=ranked.length>3&&teamFor(ranked[0])===teamFor(ranked[1])?1:0,bottomPair=ranked.length>3&&teamFor(ranked.at(-1))===teamFor(ranked.at(-2))?1:0;return topPair*12+bottomPair*10}
 function human(names){if(names.length<4)return random(names);let ratings=compositionRatings(names),candidates=candidateTeams(names),fairCandidate=fair(names),ceiling=fairCandidate.score+Math.max(12,fairCandidate.score*.35),flavoured=candidates.map(candidate=>({...candidate,score:balance(candidate.A,candidate.B,ratings)})).filter(candidate=>candidate.score<=ceiling);return flavoured.sort((a,b)=>humanSpice(b,ratings)-humanSpice(a,ratings)||a.score-b.score)[0]||fairCandidate}
+function rotationTeams(names) {
+  const history = teammateHistory(data.matches);
+  const currentDay = Date.parse(today());
+  const ratings = compositionRatings(names);
+  const pairScores = new Map();
+  names.forEach((first, index) => {
+    for (const second of names.slice(index + 1)) {
+      const key = JSON.stringify([first, second].sort());
+      const lastMatch = history.get(key);
+      pairScores.set(key, lastMatch ? Math.max(0, (currentDay - Date.parse(lastMatch.date)) / 86400000) : null);
+    }
+  });
+
+  let best;
+  for (const candidate of candidateTeams(names)) {
+    let neverTogether = 0;
+    let daysApart = 0;
+    for (const team of [candidate.A, candidate.B]) {
+      team.forEach((first, index) => {
+        for (const second of team.slice(index + 1)) {
+          const days = pairScores.get(JSON.stringify([first, second].sort()));
+          if (days === null) neverTogether++;
+          else daysApart += days;
+        }
+      });
+    }
+    const ratingTotal = team => team.reduce((sum, name) => sum + ratings[name], 0);
+    const gap = Math.abs(ratingTotal(candidate.A) - ratingTotal(candidate.B));
+    if (!best || neverTogether > best.neverTogether ||
+      (neverTogether === best.neverTogether && (daysApart > best.daysApart ||
+        (daysApart === best.daysApart && gap < best.gap)))) {
+      best = {candidate, neverTogether, daysApart, gap};
+    }
+  }
+  return best.candidate;
+}
+
 function random(names){let m=shuffle(names),k=Math.ceil(m.length/2);return{A:m.slice(0,k),B:m.slice(k)}}
 function compositionLabel(t){let ratings=compositionRatings([...t.A,...t.B]),score=balance(t.A,t.B,ratings);if(score<12)return 'Équilibre excellent';if(score<25)return 'Équilibre solide';return 'Équilibre plus ouvert'}
 function showTeams(t){let ratings=compositionRatings([...t.A,...t.B]),p=probability(t.A,t.B),team=(label,a)=>`<article class="generated-team"><p class="eyebrow">${label}</p>${a.map(n=>`<div class="generated-player">${avatar(player(n),'mini-avatar')}<span class="generated-player-name">${esc(labelForName(n))}${player(n)?.injured?' 🏥':''}<em class="composer-position" style="--position-color:${positionMeta[player(n)?.position||'polyvalent'].color}">${positionLabel(player(n)?.position)}</em></span><small>${shown(Math.round(ratings[n]))}</small></div>`).join('')}</article>`;$('#builderResult').innerHTML=`<div class="generated-grid">${team('TEAM A',t.A)}${team('TEAM B',t.B)}<div class="odds"><div class="odds-head"><span>Team A · ${shown(p,'%')}</span><b>${compositionLabel(t)}</b><span>Team B · ${shown(100-p,'%')}</span></div><div class="odds-bar"><i style="width:${mystery()?50:p}%"></i></div><small>Calcul pondéré par la fiabilité des données, la forme, les résultats, les contributions, l’expérience et les profils de jeu.</small></div></div>`}
-$$('.mode').forEach(b=>b.onclick=()=>{composeMode=b.dataset.mode;$$('.mode').forEach(x=>x.classList.toggle('active',x===b));$('#builderResult').innerHTML='';drawComposer()});$('#generateTeamsBtn').onclick=()=>{if(composeMode==='manual'){if(!composeManual.A.length||!composeManual.B.length)return toast('Place au moins un joueur dans chaque équipe.');return showTeams({A:[...composeManual.A],B:[...composeManual.B]})}if(composeSheet.length<2)return toast('Ajoute au moins deux joueurs à la feuille de match.');showTeams(composeMode==='fair'?fair(composeSheet):composeMode==='human'?human(composeSheet):random(composeSheet))};
+$$('.mode').forEach(b=>b.onclick=()=>{composeMode=b.dataset.mode;$$('.mode').forEach(x=>x.classList.toggle('active',x===b));$('#builderResult').innerHTML='';drawComposer()});$('#generateTeamsBtn').onclick=()=>{if(composeMode==='manual'){if(!composeManual.A.length||!composeManual.B.length)return toast('Place au moins un joueur dans chaque équipe.');return showTeams({A:[...composeManual.A],B:[...composeManual.B]})}if(composeSheet.length<2)return toast('Ajoute au moins deux joueurs à la feuille de match.');showTeams(composeMode==='fair'?fair(composeSheet):composeMode==='human'?human(composeSheet):composeMode==='rotation'?rotationTeams(composeSheet):random(composeSheet))};
 $('#resetComposerBtn').onclick=()=>{composeSheet=[];composeManual={A:[],B:[]};$('#builderResult').innerHTML='';drawComposer();toast('Tous les joueurs sont revenus sur le banc.')};
 $('#settingsBtn').onclick=()=>{let p=$('#accountPanel');p.innerHTML=cloud?(user?`<p class="muted">Connecté : <b>${esc(user.email)}</b>${admin(false)?' — administrateur':' — lecture seule'}</p><button class="primary wide" id="logoutBtn" type="button">Se déconnecter</button>`:'<label>E-mail administrateur<input id="emailInput" type="email" placeholder="prenom@email.com"></label><button class="primary wide" id="loginBtn" type="button">Recevoir mon lien administrateur</button>'):'<p class="muted">Mode de démonstration local.</p>';$('#themeToggle').checked=document.documentElement.dataset.theme==='dark';$('#mysterySetting').hidden=!admin(false);$('#mysteryToggle').checked=appSettings.mystery_mode;applyLanguage();$('#settingsDialog').showModal();$('#themeToggle').onchange=e=>{let theme=e.target.checked?'dark':'light';document.documentElement.dataset.theme=theme;localStorage.setItem('atonprime-theme',theme)};$('#mysteryToggle').onchange=async e=>{let value=e.target.checked;if(cloud){if(!settingsReady){e.target.checked=!value;return toast('Exécute d’abord la migration ATON°PRIME.')}let r=await db.from('app_settings').update({mystery_mode:value,updated_at:new Date().toISOString()}).eq('id','global');if(r.error){e.target.checked=!value;return toast(r.error.message)}}appSettings.mystery_mode=value;render();toast(value?'Mode mystère activé.':'Mode mystère désactivé.')};$('#loginBtn')?.addEventListener('click',async()=>{let email=$('#emailInput').value.trim().toLowerCase();if(!isAdminEmail(email))return toast('Cette adresse n’est pas autorisée.');let r=await db.auth.signInWithOtp({email,options:{shouldCreateUser:false,emailRedirectTo:window.location.origin+'/'}});if(r.error)return toast(r.error.message);toast('Lien administrateur envoyé.')});$('#logoutBtn')?.addEventListener('click',async()=>{await db.auth.signOut();closeDialog($('#settingsDialog'))})};
 bindZones('[data-match-zone]','match',moveMatch);bindZones('#autoSelectionBoard [data-compose-zone]','compose',moveCompose);bindZones('#manualSelectionBoard [data-compose-zone]','composeManual',moveManual);if('scrollRestoration'in history)history.scrollRestoration='manual';restoreNavigation();addEventListener('pagehide',()=>saveNavigation({scrollY:scrollY}));if(cfg())init().finally(restoreScrollPosition);else{render();restoreScrollPosition()}
@@ -940,6 +1066,6 @@ $('#generateTeamsBtn').onclick=()=>{
   }
   if(composeSheet.length<2)return toast('Ajoute au moins deux joueurs à la feuille de match.');
   if(composeSheet.length%2)return toast('Le nombre de joueurs doit être égal dans les deux équipes. Ajoute ou retire un joueur de la feuille de match.');
-  showTeams(composeMode==='fair'?fair(composeSheet):composeMode==='human'?human(composeSheet):random(composeSheet));
+  showTeams(composeMode==='fair'?fair(composeSheet):composeMode==='human'?human(composeSheet):composeMode==='rotation'?rotationTeams(composeSheet):random(composeSheet));
 };
 render();

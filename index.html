@@ -132,11 +132,40 @@
           <button class="mode active" data-mode="fair"><b data-i18n="fairMode">Impartial ⚖️</b><small data-i18n="fairHint">Équilibre optimisé</small></button>
           <button class="mode" data-mode="human"><b data-i18n="boldMode">Audacieux 🌶️</b><small data-i18n="boldHint">Deux associations pimentées</small></button>
           <button class="mode" data-mode="random"><b data-i18n="randomMode">Aléatoire 🎲</b><small data-i18n="randomHint">100 % hasard</small></button>
+          <button class="mode" data-mode="rotation"><b>Rotation 🔄</b><small>Varie les coéquipiers</small></button>
           <button class="mode" data-mode="manual"><b data-i18n="manualMode">Mode Manuel ✋</b><small data-i18n="manualHint">Compose les deux équipes</small></button>
         </div>
         <div class="composer-actions"><button class="secondary reset-composer" id="resetComposerBtn" type="button">↺ Reset</button><button class="primary generate" id="generateTeamsBtn" type="button" data-i18n="generateTeams">Générer les équipes</button></div>
         <div id="builderResult" class="builder-result"></div>
       </div>
+      <details class="card teammate-history">
+        <summary>Historique des coéquipiers</summary>
+        <p class="muted">Choisis un joueur de la ligue pour retrouver ses matchs avec les autres joueurs.</p>
+        <div class="teammate-history-player">
+          <div id="teammateHistoryAvatar"></div>
+          <label>Joueur sélectionné <select id="teammateHistoryPlayer"></select></label>
+        </div>
+        <div class="teammate-history-filters">
+          <label>Poste du coéquipier <select id="teammateHistoryPosition">
+            <option value="">Tous les postes</option>
+            <option value="gardien">Gardien</option>
+            <option value="defense">Défenseur</option>
+            <option value="milieu">Milieu</option>
+            <option value="attaque">Attaquant</option>
+            <option value="polyvalent">Polyvalent</option>
+          </select></label>
+          <label class="teammate-history-range">
+            <span>Délai minimum · <output id="teammateHistoryDaysValue" for="teammateHistoryDays">Tous les délais</output></span>
+            <input id="teammateHistoryDays" type="range" min="0" max="30" step="1" value="0">
+          </label>
+          <div class="teammate-history-checkboxes">
+            <label><input id="teammateHistoryNever" type="checkbox"> Jamais associés cette saison</label>
+            <label><input id="teammateHistoryHideInjured" type="checkbox"> Masquer les coéquipiers blessés</label>
+          </div>
+        </div>
+        <p class="muted" id="teammateHistoryStatus" aria-live="polite"></p>
+        <ul class="teammate-chart" id="teammateHistoryRows" aria-label="Temps écoulé depuis le dernier match ensemble"></ul>
+      </details>
     </section>
 
     <section class="page coach-page" id="conseils-coach">
